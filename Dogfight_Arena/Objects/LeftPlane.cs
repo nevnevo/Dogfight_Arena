@@ -23,9 +23,9 @@ namespace Dogfight_Arena.Objects
             if (key == Keys.DeccelerateleftPlayer)
                 base.Decelerate();
             if (key == Keys.RotateClockWiseLeftPlayer)
-                base.Turn(1);
+                base.Rotate(-1);
             if (key == Keys.RotateCounterClockWiseLeftPlayer)
-                base.Turn(-1);
+                base.Rotate(1);
         }
 
     }

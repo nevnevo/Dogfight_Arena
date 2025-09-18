@@ -25,8 +25,8 @@ namespace Dogfight_Arena.Objects
         public override void Render()
         {
             // Update position based on angle and speed
-            _x += _speed * Math.Cos(_angle);
-            _y += _speed * Math.Sin(_angle);
+            _x += _speed * Math.Cos(_angle * Math.PI / 180);
+            _y += _speed * Math.Sin(_angle * Math.PI / 180);
 
             // Apply acceleration
             _speed += _acceleration;

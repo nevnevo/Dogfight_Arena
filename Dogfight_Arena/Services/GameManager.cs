@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -15,6 +16,7 @@ namespace Dogfight_Arena.Services
         public static bool IsOnline { get; set; }
         public List<GameObject> _ObjectsList = new List<GameObject>();
         private DispatcherTimer _runTimer;
+        private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>();
         public static Events GameEvents { get; private set; } = new Events();
         public GameManager(Canvas field) 
         {
@@ -30,14 +32,17 @@ namespace Dogfight_Arena.Services
 
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
         {
-            
+            if (GameEvents.OnKeyPress != null)
+            {
+                ActiveKeys.Remove(args.VirtualKey);
+            }
         }
 
         private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
         {
             if (GameEvents.OnKeyPress != null)
             {
-                GameEvents.OnKeyPress(args.VirtualKey);
+                ActiveKeys.Add(args.VirtualKey);
             }
         }
 
@@ -45,10 +50,16 @@ namespace Dogfight_Arena.Services
         {
             foreach(GameObject obj in _ObjectsList)
             {
+
                 if(obj is GameMovingObject MovingObj)
                 {
                     MovingObj.Render();
                 }
+
+            }
+            foreach (VirtualKey key in ActiveKeys)
+            {
+                GameEvents.OnKeyPress(key);
             }
         }
     }

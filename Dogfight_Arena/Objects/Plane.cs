@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Dogfight_Arena.Services;
+using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -37,14 +39,53 @@ namespace Dogfight_Arena.Objects
             }
         }
 
-        protected void Turn(int direction)//direction>0 clockwise || direction<0 counter clockwise
-        {
-            if (direction > 0)
-                _angle = Constants.RotationConstant * Math.PI * 180;
+       
+
+        protected void Rotate(int SpinDirection)// SpinDirection with the clock gotta be a num>0 else num<0
+        { 
+            
+            if (SpinDirection > 0)
+            {
+                var rotateTransform = new RotateTransform
+                {
+                    Angle = _angle, // The rotation angle in degrees (set initial angle to 0)
+                    CenterX = _objectImage.ActualWidth / 2, // Rotate around the center of the image
+                    CenterY = _objectImage.ActualHeight / 2 // Rotate around the center of the image
+                };
+
+        // Apply the RotateTransform to the RenderTransform of the image
+        _objectImage.RenderTransform = rotateTransform;
+
+                // Update the rotation on every update (e.g., when button is clicked, etc.)
+                _angle -= 3; // Increase the angle for continuous rotation
+                rotateTransform.Angle = _angle;
+               
+                
+
+            }
             else
-                _angle = (Constants.RotationConstant * Math.PI * 180);
-            Rotate();
+            {
+
+
+                // Create a RotateTransform to apply rotation
+                var rotateTransform = new RotateTransform
+                {
+                    Angle = _angle, // The rotation angle in degrees (set initial angle to 0)
+                    CenterX = _objectImage.ActualWidth / 2, // Rotate around the center of the image
+                    CenterY = _objectImage.ActualHeight / 2 // Rotate around the center of the image
+                };
+
+    // Apply the RotateTransform to the RenderTransform of the image
+    _objectImage.RenderTransform = rotateTransform;
+
+                // Update the rotation on every update (e.g., when button is clicked, etc.)
+                _angle += 3; // Increase the angle for continuous rotation
+                rotateTransform.Angle = _angle;
+                
+
+            }
         }
+
         private (double, double) CalculateCenterPoint()
         {
             return (
@@ -52,21 +93,49 @@ namespace Dogfight_Arena.Objects
                 _y + _objectImage.Height / 2
             );
         }
-        private void Rotate()
+        private static Vector2 RotatePointsAroundAxis(Vector2 point, double centerX, double centerY, double angleInRadians)
         {
-            double centerX, centerY;
-            (centerX, centerY) = CalculateCenterPoint();
+            float translatedX = point.X - (float)centerX;
+            float translatedY = point.Y - (float)centerY;
 
-            var rotation = new RotateTransform
-            {
-                Angle = _angle, // already in degrees now
-                CenterX = centerX,
-                CenterY = centerY
-            };
+            // Rotate the point using the 2D rotation matrix
+            float rotatedX = (float)(translatedX * Math.Cos(angleInRadians) - translatedY * Math.Sin(angleInRadians));
+            float rotatedY = (float)(translatedX * Math.Sin(angleInRadians) + translatedY * Math.Cos(angleInRadians));
 
-            _objectImage.RenderTransform = rotation;
-            base.Render();
+            // Translate back to the original position
+            return new Vector2(rotatedX + (float)centerX, rotatedY + (float)centerY);
+
+
         }
+        public static Rect RotateRectAroundCenter(Rect rect, double angleInDegrees)
+        {
+            // Convert angle from degrees to radians
+            double angleInRadians = angleInDegrees * (Math.PI / 180);
 
+            // Get the center of the rectangle
+            double centerX = rect.X + rect.Width / 2;
+            double centerY = rect.Y + rect.Height / 2;
+
+            // Define the four corners of the rectangle
+            var topLeft = new Vector2((float)rect.X, (float)rect.Y);
+            var topRight = new Vector2((float)(rect.X + rect.Width), (float)rect.Y);
+            var bottomLeft = new Vector2((float)rect.X, (float)(rect.Y + rect.Height));
+            var bottomRight = new Vector2((float)(rect.X + rect.Width), (float)(rect.Y + rect.Height));
+
+            // Rotate each corner around the center
+            topLeft = RotatePointsAroundAxis(topLeft, centerX, centerY, angleInRadians);
+            topRight = RotatePointsAroundAxis(topRight, centerX, centerY, angleInRadians);
+            bottomLeft = RotatePointsAroundAxis(bottomLeft, centerX, centerY, angleInRadians);
+            bottomRight = RotatePointsAroundAxis(bottomRight, centerX, centerY, angleInRadians);
+
+            // Now we need to compute the bounding box that contains all the rotated corners
+            float minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
+            float minY = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
+            float maxX = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
+            float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
+
+            // Return the new Rect that fits the rotated corners
+            return new Rect(minX, minY, maxX - minX, maxY - minY);
+        }
     }
 }
