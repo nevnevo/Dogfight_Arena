@@ -8,7 +8,12 @@ namespace Dogfight_Arena.Services
 {
     public static class Constants
     {
-        public static readonly double MaxAcceleration = 3;//the maximum unreachable acceleration
-        public static readonly double MinAcceleration= 0;//the minimum unreachable acceleration
+        public static readonly double MaxAcceleration = 1.5;//the maximum unreachable acceleration
+        public static readonly double MinAcceleration= -1.5;//the minimum unreachable acceleration
+        public static readonly double RotationConstant = 5;
+        public static readonly double MinSpeed = 0.5;
+        public static readonly double MaxSpeed = 5;
+
+
     }
 }

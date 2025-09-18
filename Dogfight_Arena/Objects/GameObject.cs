@@ -14,6 +14,7 @@ namespace Dogfight_Arena.Objects
         protected double _y;
         protected Image _objectImage;
         protected Canvas _field;
+        
         public bool Colisional { get; set; } = true;
         public GameObject(double x, double y, string fileName, Canvas field, double size)
         {

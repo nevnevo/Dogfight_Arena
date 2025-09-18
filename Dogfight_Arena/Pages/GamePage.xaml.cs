@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dogfight_Arena.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,11 @@ namespace Dogfight_Arena.Pages
     /// </summary>
     public sealed partial class GamePage : Page
     {
+        private GameManager _GameManager;
         public GamePage()
         {
             this.InitializeComponent();
+            _GameManager = new GameManager(GameCanvas);
         }
     }
 }
