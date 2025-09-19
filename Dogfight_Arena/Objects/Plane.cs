@@ -14,14 +14,33 @@ namespace Dogfight_Arena.Objects
 {
     public class Plane : GameMovingObject
     {
+        protected PlaneTypes PlaneType;
+        public enum PlaneTypes
+        {
+            LeftPlane,RightPlane
+        }
         public Plane(double x, double y,string Image, Canvas field,int size) : base(x, y,Image, field, size)
         {
             GameManager.GameEvents.OnKeyPress += Move;
+            GameManager.GameEvents.OnKeyPress += Shoot;
             _speed = Constants.MinSpeed;
         }
+
+        protected virtual void Shoot(VirtualKey key)
+        {
+            
+        }
+
         protected virtual void Move(VirtualKey key)
         {
 
+        }
+        protected virtual void ShootBullet()
+        {
+            var (centerX, centerY) = CalculateCenterPoint();
+            var projectile = new Bullet(centerX, centerY, "Assets/Images/Bullet.png", _field, 20, _angle, PlaneType);
+            if(GameManager.GameEvents.OnShoot != null)
+                GameManager.GameEvents.OnShoot(projectile);
         }
         protected void Accelerate()
         {

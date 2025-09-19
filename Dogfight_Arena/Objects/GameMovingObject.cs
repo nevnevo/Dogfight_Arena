@@ -24,20 +24,20 @@ namespace Dogfight_Arena.Objects
         }
         public override void Render()
         {
-            // Update position based on angle and speed
+           
             _x += _speed * Math.Cos(_angle * Math.PI / 180);
             _y += _speed * Math.Sin(_angle * Math.PI / 180);
 
-            // Apply acceleration
+            
             _speed += _acceleration;
 
-            // Clamp speed
+            
             if (_speed < Constants.MinSpeed)
                 _speed = Constants.MinSpeed;
             if (_speed > Constants.MaxSpeed)
                 _speed = Constants.MaxSpeed;
 
-            // Optional: clamp acceleration
+           
             if (_acceleration > Constants.MaxAcceleration)
                 _acceleration = Constants.MaxAcceleration;
             if (_acceleration < Constants.MinAcceleration)

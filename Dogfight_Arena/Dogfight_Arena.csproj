@@ -119,6 +119,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Objects\Bullet.cs" />
     <Compile Include="Objects\GameMovingObject.cs" />
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Objects\LeftPlane.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Pages\MenuPage.xaml.cs">
       <DependentUpon>MenuPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Objects\Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Events.cs" />
     <Compile Include="Services\Keys.cs" />
@@ -196,6 +198,7 @@
     <Content Include="Assets\App\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\App\Wide310x150Logo.scale-400.png" />
     <Content Include="Assets\Images\background.png" />
+    <Content Include="Assets\Images\Bullet.png" />
     <Content Include="Assets\Images\LeftPlayer.png" />
     <Content Include="Assets\Images\RightPlayer.png" />
     <Content Include="Properties\Default.rd.xml" />

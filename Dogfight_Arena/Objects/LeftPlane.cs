@@ -13,9 +13,13 @@ namespace Dogfight_Arena.Objects
     {
         public LeftPlane(double x, double y, string Image, Canvas field, int size) : base(x, y, Image, field, size)
         {
-
+            PlaneType = PlaneTypes.LeftPlane;
         }
-
+        protected override void Shoot(VirtualKey key)
+        {
+            if (key == Keys.ShootBulletLeftPlayer)
+                ShootBullet();
+        }
         protected override void Move(VirtualKey key)
         {
             if (key == Keys.AccelerateLeftPlayer)

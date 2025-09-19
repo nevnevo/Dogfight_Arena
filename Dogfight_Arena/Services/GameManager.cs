@@ -16,7 +16,8 @@ namespace Dogfight_Arena.Services
         public static bool IsOnline { get; set; }
         public List<GameObject> _ObjectsList = new List<GameObject>();
         private DispatcherTimer _runTimer;
-        private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>();
+        private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>(); //Hashset is used to avoid duplicatekeys,because it can contain only unique values
+        private Plane LocalPlayer;
         public static Events GameEvents { get; private set; } = new Events();
         public GameManager(Canvas field) 
         {
@@ -24,10 +25,29 @@ namespace Dogfight_Arena.Services
             _runTimer.Interval = TimeSpan.FromMilliseconds(1);
             _runTimer.Start();
             _runTimer.Tick += runTimer_Tick;
-            _ObjectsList.Add(new LeftPlane(100,100,"Images/LeftPlayer.png",field,200));
+            LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, 200);
+            _ObjectsList.Add(LocalPlayer);
 
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
             Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
+            GameEvents.OnShoot += OnShoot;
+            GameEvents.OnProjectileDelete += DeleteProjectile;
+        }
+
+        private void DeleteProjectile(Projectile projectile)
+        {
+            if(projectile is Bullet bullet)
+            {
+                _ObjectsList.Remove(bullet);
+            }
+        }
+
+        private void OnShoot(Projectile projectile)
+        {
+            if(projectile is Bullet bullet)
+            {
+                    _ObjectsList.Add(bullet);
+            }
         }
 
         private void CoreWindow_KeyUp(CoreWindow sender, KeyEventArgs args)
@@ -43,6 +63,7 @@ namespace Dogfight_Arena.Services
             if (GameEvents.OnKeyPress != null)
             {
                 ActiveKeys.Add(args.VirtualKey);
+                
             }
         }
 

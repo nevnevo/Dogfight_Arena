@@ -11,5 +11,7 @@ namespace Dogfight_Arena.Services
     {
         public Action<VirtualKey> OnKeyPress;
         public Action<VirtualKey> OnKeyLeave;
+        public Action<Projectile> OnShoot;
+        public Action<Projectile> OnProjectileDelete;
     }
 }
