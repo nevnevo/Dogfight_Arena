@@ -1,22 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35731.53
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dogfight_Arena", "Dogfight_Arena\Dogfight_Arena.csproj", "{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|ARM = Debug|ARM
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Debug|ARM.ActiveCfg = Debug|ARM
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Debug|ARM.Build.0 = Debug|ARM
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -29,6 +32,7 @@ Global
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Debug|x86.ActiveCfg = Debug|x86
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Debug|x86.Build.0 = Debug|x86
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Debug|x86.Deploy.0 = Debug|x86
+		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Release|Any CPU.ActiveCfg = Release|x86
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Release|ARM.ActiveCfg = Release|ARM
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Release|ARM.Build.0 = Release|ARM
 		{BE13CA95-67E7-40B6-911D-EEC04BA1BD16}.Release|ARM.Deploy.0 = Release|ARM
@@ -44,5 +48,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {72059E32-0094-478E-BA33-3545E6C5F51F}
 	EndGlobalSection
 EndGlobal

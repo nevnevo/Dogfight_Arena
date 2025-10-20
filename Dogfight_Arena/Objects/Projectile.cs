@@ -23,5 +23,6 @@ namespace Dogfight_Arena
             _field.Children.Remove(_objectImage);
         }
 
+
     }
 }
