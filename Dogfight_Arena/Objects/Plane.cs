@@ -15,6 +15,7 @@ namespace Dogfight_Arena.Objects
     public class Plane : GameMovingObject
     {
         protected PlaneTypes PlaneType;
+        protected int HealthPoints = Constants.StartingHealthPoints;
         public enum PlaneTypes
         {
             LeftPlane,RightPlane
@@ -38,7 +39,7 @@ namespace Dogfight_Arena.Objects
         protected virtual void ShootBullet()
         {
             var (centerX, centerY) = CalculateCenterPoint();
-            var projectile = new Bullet(centerX, centerY, "Assets/Images/Bullet.png", _field, 20, _angle, PlaneType);
+            var projectile = new Bullet(centerX, centerY, "Images/LeftPlayer.png", _field, 20, _angle, PlaneType);
             if(GameManager.GameEvents.OnShoot != null)
                 GameManager.GameEvents.OnShoot(projectile);
         }
@@ -57,8 +58,11 @@ namespace Dogfight_Arena.Objects
                 _acceleration -= 0.3;
             }
         }
+        public override Rect Rect(int angle)
+        {
+            return RotateRectAroundCenter(base.Rect(), angle);
+        }
 
-       
 
         protected void Rotate(int SpinDirection)// SpinDirection with the clock gotta be a num>0 else num<0
         { 
@@ -155,6 +159,15 @@ namespace Dogfight_Arena.Objects
 
             // Return the new Rect that fits the rotated corners
             return new Rect(minX, minY, maxX - minX, maxY - minY);
+        }
+
+
+        public override void Collide(GameObject otherObject)
+        {
+            if(otherObject is Projectile projectile)
+            {
+
+            }
         }
     }
 }

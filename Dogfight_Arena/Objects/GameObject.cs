@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -32,10 +33,24 @@ namespace Dogfight_Arena.Objects
         {
             _objectImage.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"));
         }
+        public virtual Rect Rect(int angle)
+        {
+
+            return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Height - 15);
+
+        }
+        public virtual Rect Rect()
+        {
+
+            return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Height - 15);
+
+        }
         public virtual void Render()
         {
             Canvas.SetLeft(_objectImage, _x);
             Canvas.SetTop(_objectImage, _y);
+
         }
+        public virtual void Collide(GameObject otherObject) { }
     }
 }

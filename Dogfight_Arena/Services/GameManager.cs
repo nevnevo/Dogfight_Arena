@@ -74,13 +74,39 @@ namespace Dogfight_Arena.Services
 
                 if(obj is GameMovingObject MovingObj)
                 {
+                    
                     MovingObj.Render();
                 }
-
             }
+            CheckCollisional();
             foreach (VirtualKey key in ActiveKeys)
             {
                 GameEvents.OnKeyPress(key);
+            }
+
+        }
+        private void CheckCollisional()
+        {
+            for (int i = 0; i < _ObjectsList.Count; i++)
+            {
+                for (int j = 0; j < _ObjectsList.Count; j++)
+                {
+                    if (i != j && _ObjectsList[i].Colisional && _ObjectsList[j].Colisional
+                        && !RectHelper.Intersect(_ObjectsList[i].Rect(), _ObjectsList[j].Rect()).IsEmpty)
+                    {
+                        if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Projectile) || _ObjectsList[i] is Projectile && _ObjectsList[j] is Plane)
+                        {
+                            _ObjectsList[i].Collide(_ObjectsList[j]);
+                            break;
+                        }
+                        else
+                        {
+                            _ObjectsList[i].Collide(_ObjectsList[j]);
+                        }
+
+                    }
+                    
+                }
             }
         }
     }
