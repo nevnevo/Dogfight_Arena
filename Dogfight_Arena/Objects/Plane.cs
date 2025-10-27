@@ -25,6 +25,7 @@ namespace Dogfight_Arena.Objects
             GameManager.GameEvents.OnKeyPress += Move;
             GameManager.GameEvents.OnKeyPress += Shoot;
             _speed = Constants.MinSpeed;
+            _objectImage.Height = _objectImage.Width * 0.932;
         }
 
         protected virtual void Shoot(VirtualKey key)
@@ -38,8 +39,8 @@ namespace Dogfight_Arena.Objects
         }
         protected virtual void ShootBullet()
         {
-            var (centerX, centerY) = CalculateCenterPoint();
-            var projectile = new Bullet(centerX, centerY, "Images/LeftPlayer.png", _field, 20, _angle, PlaneType);
+            var (centerX, centerY) = CalculateCenterPointProjectile();
+            var projectile = new Bullet(centerX, centerY, "Images/Bullet.png", _field, 20, _angle, PlaneType);
             if(GameManager.GameEvents.OnShoot != null)
                 GameManager.GameEvents.OnShoot(projectile);
         }
@@ -114,6 +115,13 @@ namespace Dogfight_Arena.Objects
             return (
                 _x + _objectImage.Width / 2,
                 _y + _objectImage.Height / 2
+            );
+        }
+        private (double, double) CalculateCenterPointProjectile()
+        {
+            return (
+                _x + _objectImage.Width / 2,
+                _y + _objectImage.Width / 2
             );
         }
         private static Vector2 RotatePointsAroundAxis(Vector2 point, double centerX, double centerY, double angleInRadians)
