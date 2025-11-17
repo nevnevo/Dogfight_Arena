@@ -9,29 +9,30 @@ using Windows.UI.Xaml.Controls;
 
 namespace Dogfight_Arena.Objects
 {
-    public class LeftPlane : Plane
+    public class RightPlane : Plane
     {
-        public LeftPlane(double x, double y, string Image, Canvas field, int size) : base(x, y, Image, field, size)
+        public RightPlane(double x, double y, string Image, Canvas field, int size) : base(x, y, Image, field, size)
         {
             PlaneType = PlaneTypes.LeftPlane;
-            _planeTypeConstant = 1;
+            _planeTypeConstant = -1;
         }
         protected override void Shoot(VirtualKey key)
         {
-            if (key == Keys.ShootBulletLeftPlayer)
+            if (key == Keys.ShootBulletRightPlayer)
                 ShootBullet();
         }
         protected override void Move(VirtualKey key)
         {
-            if (key == Keys.AccelerateLeftPlayer)
+            if (key == Keys.AccelerateRightPlayer)
                 base.Accelerate();
-            if (key == Keys.DeccelerateleftPlayer)
+            if (key == Keys.DeccelerateRightPlayer)
                 base.Decelerate();
-            if (key == Keys.RotateClockWiseLeftPlayer)
+            if (key == Keys.RotateClockWiseLRightPlayer)
                 base.Rotate(-1);
-            if (key == Keys.RotateCounterClockWiseLeftPlayer)
+            if (key == Keys.RotateCounterClockWiseRightPlayer)
                 base.Rotate(1);
         }
 
     }
 }
+

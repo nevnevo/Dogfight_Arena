@@ -16,7 +16,8 @@ namespace Dogfight_Arena.Objects
         protected double _accelerationX;
         protected double _acceleration;
         protected double _accelerationY;
-        protected double _angle;    
+        protected double _angle;
+        protected int _planeTypeConstant;
 
         protected GameMovingObject(double x, double y, string fileName, Canvas field, double size) : base(x, y, fileName, field, size)
         {
@@ -25,8 +26,8 @@ namespace Dogfight_Arena.Objects
         public override void Render()
         {
            
-            _x += _speed * Math.Cos(_angle * Math.PI / 180);
-            _y += _speed * Math.Sin(_angle * Math.PI / 180);
+            _x += _speed * Math.Cos(_angle * Math.PI / 180)* _planeTypeConstant;
+            _y += _speed * Math.Sin(_angle * Math.PI / 180)* _planeTypeConstant;
 
             
             _speed += _acceleration;

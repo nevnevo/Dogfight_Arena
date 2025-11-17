@@ -23,10 +23,15 @@ namespace Dogfight_Arena.Pages
     /// </summary>
     public sealed partial class GamePage : Page
     {
-        private GameManager _GameManager;
+        public GameManager _GameManager;
         public GamePage()
         {
             this.InitializeComponent();
+            
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
             _GameManager = new GameManager(GameCanvas);
         }
     }

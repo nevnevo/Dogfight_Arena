@@ -124,6 +124,7 @@
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Objects\LeftPlane.cs" />
     <Compile Include="Objects\Plane.cs" />
+    <Compile Include="Objects\RightPlane.cs" />
     <Compile Include="Pages\GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>

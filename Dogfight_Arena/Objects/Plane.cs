@@ -10,12 +10,16 @@ using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
+
 namespace Dogfight_Arena.Objects
 {
     public class Plane : GameMovingObject
     {
         protected PlaneTypes PlaneType;
         protected int HealthPoints = Constants.StartingHealthPoints;
+
+        
+
         public enum PlaneTypes
         {
             LeftPlane,RightPlane
@@ -172,8 +176,10 @@ namespace Dogfight_Arena.Objects
 
         public override void Collide(GameObject otherObject)
         {
-            if(otherObject is Projectile projectile)
+            if(otherObject is Projectile projectile && projectile._ShootingPlayer!= PlaneType)
             {
+                GameManager.GameEvents.OnProjectileDelete(projectile);
+                projectile.Remove();
 
             }
         }

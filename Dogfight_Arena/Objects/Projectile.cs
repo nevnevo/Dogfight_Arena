@@ -21,6 +21,7 @@ namespace Dogfight_Arena
         public void Remove()
         {
             _field.Children.Remove(_objectImage);
+
         }
 
 

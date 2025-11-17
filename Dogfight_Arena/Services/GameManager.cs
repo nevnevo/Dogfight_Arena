@@ -18,15 +18,25 @@ namespace Dogfight_Arena.Services
         private DispatcherTimer _runTimer;
         private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>(); //Hashset is used to avoid duplicatekeys,because it can contain only unique values
         private Plane LocalPlayer;
+        private Plane SecondPlayer;
+        private Canvas _field;
         public static Events GameEvents { get; private set; } = new Events();
         public GameManager(Canvas field) 
         {
+            _field = field;
             _runTimer = new DispatcherTimer();
             _runTimer.Interval = TimeSpan.FromMilliseconds(1);
             _runTimer.Start();
             _runTimer.Tick += runTimer_Tick;
-            LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, 200);
-            _ObjectsList.Add(LocalPlayer);
+
+            if (!IsOnline)
+            {//If the player chose to play offline
+                LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, 200);
+                SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 100, "Images/RightPlayer.png", field, 200);
+                _ObjectsList.Add(LocalPlayer);
+                _ObjectsList.Add(SecondPlayer);
+            }
+            
 
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
             Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
@@ -34,11 +44,13 @@ namespace Dogfight_Arena.Services
             GameEvents.OnProjectileDelete += DeleteProjectile;
         }
 
-        private void DeleteProjectile(Projectile projectile)
+        public void DeleteProjectile(Projectile projectile)
         {
             if(projectile is Bullet bullet)
             {
                 _ObjectsList.Remove(bullet);
+                bullet.Remove();
+                
             }
         }
 
@@ -46,7 +58,7 @@ namespace Dogfight_Arena.Services
         {
             if(projectile is Bullet bullet)
             {
-                    _ObjectsList.Add(bullet);
+                _ObjectsList.Add(bullet);
             }
         }
 
@@ -94,7 +106,7 @@ namespace Dogfight_Arena.Services
                     if (i != j && _ObjectsList[i].Colisional && _ObjectsList[j].Colisional
                         && !RectHelper.Intersect(_ObjectsList[i].Rect(), _ObjectsList[j].Rect()).IsEmpty)
                     {
-                        if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Projectile) || _ObjectsList[i] is Projectile && _ObjectsList[j] is Plane)
+                        if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Bullet) || (_ObjectsList[i] is Bullet && _ObjectsList[j] is Plane))
                         {
                             _ObjectsList[i].Collide(_ObjectsList[j]);
                             break;
