@@ -25,6 +25,7 @@ namespace Dogfight_Arena.Objects
         }
         public override void Render()
         {
+
            
             _x += _speed * Math.Cos(_angle * Math.PI / 180)* _planeTypeConstant;
             _y += _speed * Math.Sin(_angle * Math.PI / 180)* _planeTypeConstant;

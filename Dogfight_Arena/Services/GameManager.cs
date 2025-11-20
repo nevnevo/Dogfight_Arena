@@ -66,6 +66,10 @@ namespace Dogfight_Arena.Services
         {
             if (GameEvents.OnKeyPress != null)
             {
+                if (args.VirtualKey == Keys.ShootBulletLeftPlayer)
+                {
+                    GameEvents.OnKeyLeave(args.VirtualKey);
+                }
                 ActiveKeys.Remove(args.VirtualKey);
             }
         }
@@ -84,10 +88,10 @@ namespace Dogfight_Arena.Services
             foreach(GameObject obj in _ObjectsList)
             {
 
-                if(obj is GameMovingObject MovingObj)
+                if(obj is GameMovingObject)
                 {
                     
-                    MovingObj.Render();
+                    obj.Render();
                 }
             }
             CheckCollisional();
@@ -111,10 +115,7 @@ namespace Dogfight_Arena.Services
                             _ObjectsList[i].Collide(_ObjectsList[j]);
                             break;
                         }
-                        else
-                        {
-                            _ObjectsList[i].Collide(_ObjectsList[j]);
-                        }
+                        
 
                     }
                     

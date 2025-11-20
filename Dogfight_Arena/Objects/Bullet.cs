@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dogfight_Arena.Services;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -25,9 +26,19 @@ namespace Dogfight_Arena.Objects
                 return;
             }
                 
-            base.Render();
+            
             ttl -= 1;
             _speed = Constants.BulletSpeed;
+
+            if (_ShootingPlayer == Plane.PlaneTypes.RightPlane)
+                _planeTypeConstant = -1;
+            else
+                _planeTypeConstant = 1;
+            base.Render();
+        }
+        public override Rect Rect()
+        {
+            
         }
 
     }

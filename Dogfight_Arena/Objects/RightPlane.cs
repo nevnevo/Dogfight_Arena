@@ -13,7 +13,7 @@ namespace Dogfight_Arena.Objects
     {
         public RightPlane(double x, double y, string Image, Canvas field, int size) : base(x, y, Image, field, size)
         {
-            PlaneType = PlaneTypes.LeftPlane;
+            PlaneType = PlaneTypes.RightPlane;
             _planeTypeConstant = -1;
         }
         protected override void Shoot(VirtualKey key)

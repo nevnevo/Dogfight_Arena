@@ -27,7 +27,7 @@ namespace Dogfight_Arena.Objects
         public Plane(double x, double y,string Image, Canvas field,int size) : base(x, y,Image, field, size)
         {
             GameManager.GameEvents.OnKeyPress += Move;
-            GameManager.GameEvents.OnKeyPress += Shoot;
+            GameManager.GameEvents.OnKeyLeave += Shoot;
             _speed = Constants.MinSpeed;
             _objectImage.Height = _objectImage.Width * 0.932;
         }
