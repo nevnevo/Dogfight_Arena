@@ -108,16 +108,16 @@ namespace Dogfight_Arena.Services
                 for (int j = 0; j < _ObjectsList.Count; j++)
                 {
                     if (i != j && _ObjectsList[i].Colisional && _ObjectsList[j].Colisional
-                        && !RectHelper.Intersect(_ObjectsList[i].Rect(), _ObjectsList[j].Rect()).IsEmpty)
-                    {
-                        if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Bullet) || (_ObjectsList[i] is Bullet && _ObjectsList[j] is Plane))
+                        )
+                        if(!RectHelper.Intersect(_ObjectsList[i].Rect(), _ObjectsList[j].Rect()).IsEmpty)
                         {
-                            _ObjectsList[i].Collide(_ObjectsList[j]);
-                            break;
+                            if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Bullet) || (_ObjectsList[i] is Bullet && _ObjectsList[j] is Plane))
+                            {
+                                _ObjectsList[i].Collide(_ObjectsList[j]);
+                                break;
+                            }
                         }
-                        
-
-                    }
+                    
                     
                 }
             }

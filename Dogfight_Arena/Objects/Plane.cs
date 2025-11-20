@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Dogfight_Arena.Services;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -63,9 +64,10 @@ namespace Dogfight_Arena.Objects
                 _acceleration -= 0.3;
             }
         }
-        public override Rect Rect(int angle)
+        public override Rect Rect()
         {
-            return RotateRectAroundCenter(base.Rect(), angle);
+            RectangleHelper.DrawTankRectangle(_field,_x,_y,_objectImage.Width,_objectImage.Height,Colors.Black,(int)_angle);
+            return RotateRectAroundCenter(base.Rect(), this._angle);
         }
 
 
@@ -170,6 +172,7 @@ namespace Dogfight_Arena.Objects
             float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
 
             // Return the new Rect that fits the rotated corners
+            
             return new Rect(minX, minY, maxX - minX, maxY - minY);
         }
 

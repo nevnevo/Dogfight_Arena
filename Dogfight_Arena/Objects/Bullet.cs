@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dogfight_Arena.Services;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -38,7 +39,8 @@ namespace Dogfight_Arena.Objects
         }
         public override Rect Rect()
         {
-            
+
+            return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Width - 15);
         }
 
     }
