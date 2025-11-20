@@ -36,7 +36,7 @@ namespace Dogfight_Arena.Objects
                 _planeTypeConstant = -1;
             else
                 _planeTypeConstant = 1;
-            Debug.WriteLine("Bullet update");
+            
             base.Render();
         }
         public override Rect Rect()

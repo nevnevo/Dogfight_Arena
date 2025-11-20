@@ -18,7 +18,7 @@ namespace Dogfight_Arena.Objects
     {
         protected PlaneTypes PlaneType;
         protected int HealthPoints = Constants.StartingHealthPoints;
-
+        public int BulletsLeft = 5;
         
 
         public enum PlaneTypes

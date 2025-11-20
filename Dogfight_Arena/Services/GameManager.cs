@@ -14,12 +14,15 @@ namespace Dogfight_Arena.Services
     public class GameManager
     {
         public static bool IsOnline { get; set; }
+        private readonly object _objectListLock = new object();
         public List<GameObject> _ObjectsList = new List<GameObject>();
+
         private DispatcherTimer _runTimer;
         private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>(); //Hashset is used to avoid duplicatekeys,because it can contain only unique values
         private Plane LocalPlayer;
         private Plane SecondPlayer;
         private Canvas _field;
+        private int PlayerWidth = 100;
         public static Events GameEvents { get; private set; } = new Events();
         public GameManager(Canvas field) 
         {
@@ -31,8 +34,8 @@ namespace Dogfight_Arena.Services
 
             if (!IsOnline)
             {//If the player chose to play offline
-                LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, 200);
-                SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 100, "Images/RightPlayer.png", field, 200);
+                LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, PlayerWidth);
+                SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 100, "Images/RightPlayer.png", field, PlayerWidth);
                 _ObjectsList.Add(LocalPlayer);
                 _ObjectsList.Add(SecondPlayer);
             }
@@ -48,7 +51,35 @@ namespace Dogfight_Arena.Services
         {
             if(projectile is Bullet bullet)
             {
-                _ObjectsList.Remove(bullet);
+                if (_ObjectsList[0] is LeftPlane lplane)
+                {
+                    if (bullet._ShootingPlayer == Plane.PlaneTypes.LeftPlane)
+                        lplane.BulletsLeft++;
+                    else
+                    {
+                        if (_ObjectsList[1] is RightPlane rplane)
+                        {
+                            rplane.BulletsLeft++;
+                        }
+                    }
+                }
+                else if (_ObjectsList[0] is RightPlane rplane)
+                {
+                    if (bullet._ShootingPlayer == Plane.PlaneTypes.RightPlane)
+                        rplane.BulletsLeft++;
+                    else
+                    {
+                        if (_ObjectsList[1] is LeftPlane lplane2)
+                        {
+                            lplane2.BulletsLeft++;
+                        }
+                    }
+                }
+                lock (_objectListLock)
+                {
+                    _ObjectsList.Remove(bullet);
+                }
+                
                 bullet.Remove();
                 
             }
@@ -58,7 +89,10 @@ namespace Dogfight_Arena.Services
         {
             if(projectile is Bullet bullet)
             {
-                _ObjectsList.Add(bullet);
+                lock (_objectListLock)
+                {
+                    _ObjectsList.Add(bullet);
+                }
             }
         }
 
@@ -85,21 +119,28 @@ namespace Dogfight_Arena.Services
 
         private void runTimer_Tick(object sender, object e)
         {
-            foreach(GameObject obj in _ObjectsList)
-            {
+            List<GameObject> currentObjects;
 
-                if(obj is GameMovingObject)
+           
+            lock (_objectListLock)
+            {
+                currentObjects = _ObjectsList.ToList();
+            }
+
+            
+            foreach (GameObject obj in currentObjects)
+            {
+                if (obj is GameMovingObject)
                 {
-                    
                     obj.Render();
                 }
             }
-            CheckCollisional();
+
+            CheckCollisional(); 
             foreach (VirtualKey key in ActiveKeys)
             {
                 GameEvents.OnKeyPress(key);
             }
-
         }
         private void CheckCollisional()
         {
