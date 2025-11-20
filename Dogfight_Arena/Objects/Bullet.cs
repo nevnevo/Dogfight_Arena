@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,12 +36,13 @@ namespace Dogfight_Arena.Objects
                 _planeTypeConstant = -1;
             else
                 _planeTypeConstant = 1;
+            Debug.WriteLine("Bullet update");
             base.Render();
         }
         public override Rect Rect()
         {
 
-            return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Width - 15);
+            return new Rect(_x, _y, _objectImage.ActualWidth, _objectImage.ActualWidth);
         }
 
     }

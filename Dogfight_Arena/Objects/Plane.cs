@@ -37,6 +37,11 @@ namespace Dogfight_Arena.Objects
         {
             
         }
+        public void UnsubscribeEvents()
+        {
+            GameManager.GameEvents.OnKeyPress -= Move;
+            GameManager.GameEvents.OnKeyLeave -= Shoot;
+        }
 
         protected virtual void Move(VirtualKey key)
         {
@@ -45,7 +50,7 @@ namespace Dogfight_Arena.Objects
         protected virtual void ShootBullet()
         {
             var (centerX, centerY) = CalculateCenterPointProjectile();
-            var projectile = new Bullet(centerX, centerY, "Images/Bullet.png", _field, 20, _angle, PlaneType);
+            var projectile = new Bullet(centerX, centerY, "Images/Bullet.png", _field, 5, _angle, PlaneType);
             if(GameManager.GameEvents.OnShoot != null)
                 GameManager.GameEvents.OnShoot(projectile);
         }
@@ -66,7 +71,7 @@ namespace Dogfight_Arena.Objects
         }
         public override Rect Rect()
         {
-            RectangleHelper.DrawTankRectangle(_field,_x,_y,_objectImage.Width,_objectImage.Height,Colors.Black,(int)_angle);
+            
             return RotateRectAroundCenter(base.Rect(), this._angle);
         }
 
@@ -116,13 +121,7 @@ namespace Dogfight_Arena.Objects
             }
         }
 
-        private (double, double) CalculateCenterPoint()
-        {
-            return (
-                _x + _objectImage.Width / 2,
-                _y + _objectImage.Height / 2
-            );
-        }
+        
         private (double, double) CalculateCenterPointProjectile()
         {
             return (
@@ -166,10 +165,10 @@ namespace Dogfight_Arena.Objects
             bottomRight = RotatePointsAroundAxis(bottomRight, centerX, centerY, angleInRadians);
 
             // Now we need to compute the bounding box that contains all the rotated corners
-            float minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
-            float minY = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
-            float maxX = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
-            float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
+            float minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X))+17;
+            float minY = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y))+17;
+            float maxX = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X))-17;
+            float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y))-17;
 
             // Return the new Rect that fits the rotated corners
             
@@ -183,6 +182,11 @@ namespace Dogfight_Arena.Objects
             {
                 GameManager.GameEvents.OnProjectileDelete(projectile);
                 projectile.Remove();
+
+                if (GameManager.GameEvents.TakeHit != null)
+                {
+                    GameManager.GameEvents.TakeHit(PlaneType);
+                }
 
             }
         }

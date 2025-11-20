@@ -66,7 +66,7 @@ namespace Dogfight_Arena.Services
         {
             if (GameEvents.OnKeyPress != null)
             {
-                if (args.VirtualKey == Keys.ShootBulletLeftPlayer)
+                if (args.VirtualKey == Keys.ShootBulletLeftPlayer || args.VirtualKey==Keys.ShootBulletRightPlayer)
                 {
                     GameEvents.OnKeyLeave(args.VirtualKey);
                 }
@@ -122,5 +122,17 @@ namespace Dogfight_Arena.Services
                 }
             }
         }
+        public void UnsubscribeAllEvents()
+        {
+            GameEvents.OnShoot -= OnShoot;
+            Window.Current.CoreWindow.KeyDown-= CoreWindow_KeyDown;
+            Window.Current.CoreWindow.KeyUp-= CoreWindow_KeyUp;
+            GameEvents.OnProjectileDelete -= DeleteProjectile;
+            LocalPlayer.UnsubscribeEvents();
+            SecondPlayer.UnsubscribeEvents();
+
+        }
+
+
     }
 }

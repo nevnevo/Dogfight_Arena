@@ -16,8 +16,8 @@ namespace Dogfight_Arena.Services
 
         public static readonly int StartingHealthPoints = 5;
 
-        public static double ProjectileTimeToLive = 10000;//time to live in milliseconds ==> 10 seconds
+        public static double ProjectileTimeToLive = 5000;//time to live in milliseconds ==> 5 seconds
 
-        public static double BulletSpeed = 50;
+        public static double BulletSpeed = 25;
     }
 }

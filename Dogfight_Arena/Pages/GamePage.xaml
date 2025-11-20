@@ -38,6 +38,20 @@
             <ImageBrush ImageSource="/Assets/Images/background.png" Stretch="UniformToFill"/>
         </Grid.Background>
         <Canvas Grid.Row="1" Grid.Column="0" Grid.RowSpan="9" Grid.ColumnSpan="11" x:Name="GameCanvas"></Canvas>
+        <TextBlock x:Name="healthBarLeftPlayer" Grid.Row="0" Grid.Column="1" FontSize="40" Text="5❤️"></TextBlock>
+        <TextBlock x:Name="healthBarRightPlayer" Grid.Row="0" Grid.Column="9" FontSize="40" Text="❤️5"></TextBlock>
+
+        <ContentDialog
+            x:Name="InescapableDialog"
+            Title="Game Ended!"
+            Content=""
+            PrimaryButtonText="Return to the menu"
+            SecondaryButtonText="Play again!"
+            Grid.Row="2"
+            Grid.Column="3"
+            Grid.ColumnSpan="5"
+            Grid.RowSpan="5"/>
+        
         
     </Grid>
 </Page>
