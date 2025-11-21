@@ -23,8 +23,8 @@ namespace Dogfight_Arena.Objects
             if (ttl < 0)
             {
                 Remove();
-                if (GameManager.GameEvents.OnProjectileDelete != null)
-                    GameManager.GameEvents.OnProjectileDelete(this);
+                if (GameManager.GameEvents.OnDelete != null)
+                    GameManager.GameEvents.OnDelete(this);
                 return;
             }
                 

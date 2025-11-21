@@ -18,11 +18,13 @@ namespace Dogfight_Arena.Services
         public List<GameObject> _ObjectsList = new List<GameObject>();
 
         private DispatcherTimer _runTimer;
+        private DispatcherTimer _spawnHealthCratesTimer;
         private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>(); //Hashset is used to avoid duplicatekeys,because it can contain only unique values
         private Plane LocalPlayer;
         private Plane SecondPlayer;
         private Canvas _field;
         private int PlayerWidth = 100;
+        private bool _isLastHealthCrateOn = false;
         public static Events GameEvents { get; private set; } = new Events();
         public GameManager(Canvas field) 
         {
@@ -31,25 +33,38 @@ namespace Dogfight_Arena.Services
             _runTimer.Interval = TimeSpan.FromMilliseconds(1);
             _runTimer.Start();
             _runTimer.Tick += runTimer_Tick;
-
+            _spawnHealthCratesTimer = new DispatcherTimer();
+            _spawnHealthCratesTimer.Interval = TimeSpan.FromMilliseconds(10000);
+            
             if (!IsOnline)
             {//If the player chose to play offline
                 LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, PlayerWidth);
                 SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 100, "Images/RightPlayer.png", field, PlayerWidth);
                 _ObjectsList.Add(LocalPlayer);
                 _ObjectsList.Add(SecondPlayer);
+                _spawnHealthCratesTimer.Start();
+                _spawnHealthCratesTimer.Tick += _spawnHealthCratesTimer_Tick;
             }
             
 
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
             Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
             GameEvents.OnShoot += OnShoot;
-            GameEvents.OnProjectileDelete += DeleteProjectile;
+            GameEvents.OnDelete += DeleteObject;
         }
 
-        public void DeleteProjectile(Projectile projectile)
+        private void _spawnHealthCratesTimer_Tick(object sender, object e)
         {
-            if(projectile is Bullet bullet)
+            if (!_isLastHealthCrateOn)
+            {
+                Random rnd = new Random();
+                _ObjectsList.Add(new Crate(rnd.Next(0,(int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/healthCrate.png",_field,50,Crate.CrateTypes.HealthCrate));
+            }
+        }
+
+        public void DeleteObject(GameObject go)
+        {
+            if(go is Bullet bullet)
             {
                 if (_ObjectsList[0] is LeftPlane lplane)
                 {
@@ -83,7 +98,18 @@ namespace Dogfight_Arena.Services
                 bullet.Remove();
                 
             }
+            if(go is Crate hc)
+            {
+                lock (_objectListLock)
+                {
+                    _ObjectsList.Remove(hc);
+                }
+
+                hc.Remove();
+            }
+
         }
+        
 
         private void OnShoot(Projectile projectile)
         {
@@ -152,7 +178,7 @@ namespace Dogfight_Arena.Services
                         )
                         if(!RectHelper.Intersect(_ObjectsList[i].Rect(), _ObjectsList[j].Rect()).IsEmpty)
                         {
-                            if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Bullet) || (_ObjectsList[i] is Bullet && _ObjectsList[j] is Plane))
+                            if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Bullet) || (_ObjectsList[i] is Bullet && _ObjectsList[j] is Plane) || (_ObjectsList[i] is Plane && _ObjectsList[j] is Crate))
                             {
                                 _ObjectsList[i].Collide(_ObjectsList[j]);
                                 break;
@@ -168,7 +194,7 @@ namespace Dogfight_Arena.Services
             GameEvents.OnShoot -= OnShoot;
             Window.Current.CoreWindow.KeyDown-= CoreWindow_KeyDown;
             Window.Current.CoreWindow.KeyUp-= CoreWindow_KeyUp;
-            GameEvents.OnProjectileDelete -= DeleteProjectile;
+            GameEvents.OnDelete -= DeleteObject;
             LocalPlayer.UnsubscribeEvents();
             SecondPlayer.UnsubscribeEvents();
 

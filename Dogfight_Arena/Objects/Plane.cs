@@ -18,7 +18,7 @@ namespace Dogfight_Arena.Objects
     {
         protected PlaneTypes PlaneType;
         protected int HealthPoints = Constants.StartingHealthPoints;
-        public int BulletsLeft = 5;
+        public int BulletsLeft = 2;
         
 
         public enum PlaneTypes
@@ -180,7 +180,7 @@ namespace Dogfight_Arena.Objects
         {
             if(otherObject is Projectile projectile && projectile._ShootingPlayer!= PlaneType)
             {
-                GameManager.GameEvents.OnProjectileDelete(projectile);
+                GameManager.GameEvents.OnDelete(projectile);
                 projectile.Remove();
 
                 if (GameManager.GameEvents.TakeHit != null)
@@ -188,6 +188,22 @@ namespace Dogfight_Arena.Objects
                     GameManager.GameEvents.TakeHit(PlaneType);
                 }
 
+            }
+            if(otherObject is Crate hc)
+            {
+                if (hc.CrateType == Crate.CrateTypes.HealthCrate)
+                {
+                    if (GameManager.GameEvents.AddHealthPoint != null)
+                    {
+                        GameManager.GameEvents.AddHealthPoint(PlaneType);
+                    }
+                    hc.Remove();
+                    if (GameManager.GameEvents.OnDelete != null)
+                    {
+                        GameManager.GameEvents.OnDelete(hc);
+                    }
+                }
+                
             }
         }
     }

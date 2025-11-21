@@ -122,6 +122,7 @@
     <Compile Include="Objects\Bullet.cs" />
     <Compile Include="Objects\GameMovingObject.cs" />
     <Compile Include="Objects\GameObject.cs" />
+    <Compile Include="Objects\HealthCrate.cs" />
     <Compile Include="Objects\LeftPlane.cs" />
     <Compile Include="Objects\Plane.cs" />
     <Compile Include="Objects\RightPlane.cs" />
@@ -203,7 +204,9 @@
     <Content Include="Assets\App\Wide310x150Logo.scale-400.png" />
     <Content Include="Assets\Images\background.png" />
     <Content Include="Assets\Images\Bullet.png" />
+    <Content Include="Assets\Images\healthCrate.png" />
     <Content Include="Assets\Images\LeftPlayer.png" />
+    <Content Include="Assets\Images\MissileCrate.png" />
     <Content Include="Assets\Images\RightPlayer.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Dogfight_Arena.Objects;
 using Windows.System;
 using static Dogfight_Arena.Objects.Plane;
 
@@ -14,7 +15,8 @@ namespace Dogfight_Arena.Services
         public Action<VirtualKey> OnKeyPress;
         public Action<VirtualKey> OnKeyLeave;
         public Action<Projectile> OnShoot;
-        public Action<Projectile> OnProjectileDelete;
+        public Action<GameObject> OnDelete;
         public Action<PlaneTypes> TakeHit;
+        public Action<PlaneTypes> AddHealthPoint;
     }
 }

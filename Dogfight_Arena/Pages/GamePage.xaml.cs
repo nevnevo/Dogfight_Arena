@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using static Dogfight_Arena.Objects.Plane;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -44,12 +45,30 @@ namespace Dogfight_Arena.Pages
             
             
             GameManager.GameEvents.TakeHit += TakeHit;
+            GameManager.GameEvents.AddHealthPoint += AddHealthPoint;
             
             
                 
 
 
         }
+
+        private void AddHealthPoint(Plane.PlaneTypes PlaneType)
+        {
+            if (PlaneType == Plane.PlaneTypes.LeftPlane)
+            {
+
+                LeftPlayerHealth++;
+                healthBarLeftPlayer.Text = LeftPlayerHealth + "❤️";
+            }
+            else
+            {
+
+                RightPlayerHealth++;
+                healthBarRightPlayer.Text = "❤️" + RightPlayerHealth;
+            }
+        }
+
         private async void ShowDialog()
         {
             
@@ -80,7 +99,7 @@ namespace Dogfight_Arena.Pages
         }
         private void TakeHit(Plane.PlaneTypes PlaneType)
         {
-            Debug.WriteLine(1);
+            
             if (PlaneType == Plane.PlaneTypes.LeftPlane)
             {
                 

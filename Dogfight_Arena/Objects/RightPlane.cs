@@ -18,8 +18,12 @@ namespace Dogfight_Arena.Objects
         }
         protected override void Shoot(VirtualKey key)
         {
-            if (key == Keys.ShootBulletRightPlayer)
+            if (key == Keys.ShootBulletRightPlayer && BulletsLeft > 0)
+            {
+                BulletsLeft--;
                 ShootBullet();
+
+            }
         }
         protected override void Move(VirtualKey key)
         {
