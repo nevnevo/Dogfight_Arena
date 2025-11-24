@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Dogfight_Arena.Objects;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Dogfight_Arena
@@ -19,8 +21,9 @@ namespace Dogfight_Arena
             _ShootingPlayer = ShootingPlayer;
         }
         public void Remove()
-        {
+        { 
             _field.Children.Remove(_objectImage);
+            this.Colisional = false;
 
         }
 

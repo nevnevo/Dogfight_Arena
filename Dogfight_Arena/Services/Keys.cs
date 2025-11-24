@@ -23,5 +23,7 @@ namespace Dogfight_Arena.Services
 
         public static VirtualKey ShootBulletLeftPlayer = VirtualKey.E;
         public static VirtualKey ShootBulletRightPlayer = VirtualKey.Space;
+
+        
     }
 }
