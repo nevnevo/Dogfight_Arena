@@ -16,11 +16,12 @@ namespace Dogfight_Arena.Objects
 {
     public class Plane : GameMovingObject
     {
-        protected PlaneTypes PlaneType;
+        public PlaneTypes PlaneType;
         protected int HealthPoints = Constants.StartingHealthPoints;
         public int BulletsLeft = 2;
+        public int MissileLeft = 0;
+        public bool canShootMissile = false;
         
-
         public enum PlaneTypes
         {
             LeftPlane,RightPlane
@@ -75,8 +76,15 @@ namespace Dogfight_Arena.Objects
             return RotateRectAroundCenter(base.Rect(), this._angle);
         }
 
+        protected void ShootMissile()
+        {
+            if (GameManager.GameEvents.CreateMissile != null)
+            {
+                GameManager.GameEvents.CreateMissile(PlaneType);
+            }
+        }
 
-        protected void Rotate(int SpinDirection)// SpinDirection with the clock gotta be a num>0 else num<0
+        public void Rotate(int SpinDirection)// SpinDirection with the clock gotta be a num>0 else num<0
         { 
             
             if (SpinDirection > 0)
@@ -165,16 +173,46 @@ namespace Dogfight_Arena.Objects
             bottomRight = RotatePointsAroundAxis(bottomRight, centerX, centerY, angleInRadians);
 
             // Now we need to compute the bounding box that contains all the rotated corners
-            float minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X))+17;
+            float minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X))+9;
             float minY = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y))+17;
             float maxX = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X))-17;
-            float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y))-17;
+            float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y))-9;
 
             // Return the new Rect that fits the rotated corners
             
             return new Rect(minX, minY, maxX - minX, maxY - minY);
         }
+        public static Rect RotateRectAroundCenter2(Rect rect, double angleInDegrees)
+        {
+            // Convert angle from degrees to radians
+            double angleInRadians = angleInDegrees * (Math.PI / 180);
 
+            // Get the center of the rectangle
+            double centerX = rect.X + rect.Width / 2;
+            double centerY = rect.Y + rect.Height / 2;
+
+            // Define the four corners of the rectangle
+            var topLeft = new Vector2((float)rect.X, (float)rect.Y);
+            var topRight = new Vector2((float)(rect.X + rect.Width), (float)rect.Y);
+            var bottomLeft = new Vector2((float)rect.X, (float)(rect.Y + rect.Height));
+            var bottomRight = new Vector2((float)(rect.X + rect.Width), (float)(rect.Y + rect.Height));
+
+            // Rotate each corner around the center
+            topLeft = RotatePointsAroundAxis(topLeft, centerX, centerY, angleInRadians);
+            topRight = RotatePointsAroundAxis(topRight, centerX, centerY, angleInRadians);
+            bottomLeft = RotatePointsAroundAxis(bottomLeft, centerX, centerY, angleInRadians);
+            bottomRight = RotatePointsAroundAxis(bottomRight, centerX, centerY, angleInRadians);
+
+            // Now we need to compute the bounding box that contains all the rotated corners
+            float minX = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
+            float minY = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
+            float maxX = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
+            float maxY = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
+
+            // Return the new Rect that fits the rotated corners
+
+            return new Rect(minX, minY, maxX - minX, maxY - minY);
+        }
 
         public override void Collide(GameObject otherObject)
         {
@@ -189,9 +227,9 @@ namespace Dogfight_Arena.Objects
                 }
 
             }
-            if(otherObject is Crate hc)
+            if(otherObject is HealthCrate hc)
             {
-                if (hc.CrateType == Crate.CrateTypes.HealthCrate)
+                if (hc.CrateType == HealthCrate.CrateTypes.HealthCrate)
                 {
                     if (GameManager.GameEvents.AddHealthPoint != null)
                     {
@@ -203,7 +241,18 @@ namespace Dogfight_Arena.Objects
                         GameManager.GameEvents.OnDelete(hc);
                     }
                 }
-                
+                if (hc.CrateType == HealthCrate.CrateTypes.MissileCrate)
+                {
+                    
+                    hc.Remove();
+                    if (GameManager.GameEvents.OnDelete != null)
+                    {
+                        GameManager.GameEvents.OnDelete(hc);
+                    }
+                    canShootMissile = true;
+                    MissileLeft++;
+                }
+
             }
         }
     }

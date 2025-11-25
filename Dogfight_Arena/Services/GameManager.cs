@@ -25,6 +25,7 @@ namespace Dogfight_Arena.Services
         private Canvas _field;
         private int PlayerWidth = 100;
         private bool _isLastHealthCrateOn = false;
+        private bool _isLastMissileCrateOn = false;
         public static Events GameEvents { get; private set; } = new Events();
         public GameManager(Canvas field) 
         {
@@ -39,11 +40,11 @@ namespace Dogfight_Arena.Services
             if (!IsOnline)
             {//If the player chose to play offline
                 LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, PlayerWidth);
-                SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 100, "Images/RightPlayer.png", field, PlayerWidth);
+                SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
                 _ObjectsList.Add(LocalPlayer);
                 _ObjectsList.Add(SecondPlayer);
                 _spawnHealthCratesTimer.Start();
-                _spawnHealthCratesTimer.Tick += _spawnHealthCratesTimer_Tick;
+                _spawnHealthCratesTimer.Tick += _spawnCratesTimer_Tick;
             }
             
 
@@ -51,14 +52,48 @@ namespace Dogfight_Arena.Services
             Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
             GameEvents.OnShoot += OnShoot;
             GameEvents.OnDelete += DeleteObject;
+            GameEvents.CreateMissile += CreateMissile;
         }
 
-        private void _spawnHealthCratesTimer_Tick(object sender, object e)
+        private void CreateMissile(Plane.PlaneTypes ShootingPlayer)
+        {
+            Plane enemyPlane = null;
+            Plane thisPlane = null;
+            foreach(GameObject obj in _ObjectsList)
+            {
+                if (obj is Plane plane)
+                {
+
+                
+                    if (plane.PlaneType == ShootingPlayer)
+                        thisPlane = plane;
+                    else
+                        enemyPlane = plane;
+                }
+
+            }
+
+            Missile missile = new Missile(thisPlane._x,thisPlane._y,"Images/missile.png",_field,50,thisPlane._angle,ShootingPlayer,enemyPlane);
+            lock (_objectListLock)
+            {
+                _ObjectsList.Add(missile);
+            }
+
+        }
+
+        private void _spawnCratesTimer_Tick(object sender, object e)
         {
             if (!_isLastHealthCrateOn)
             {
                 Random rnd = new Random();
-                _ObjectsList.Add(new Crate(rnd.Next(0,(int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/healthCrate.png",_field,50,Crate.CrateTypes.HealthCrate));
+                _ObjectsList.Add(new HealthCrate(rnd.Next(0,(int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/healthCrate.png",_field,50, HealthCrate.CrateTypes.HealthCrate));
+                _isLastHealthCrateOn = true;
+            }
+            if (!_isLastMissileCrateOn)
+            {
+                Random rnd = new Random();
+                _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/MissileCrate.png", _field, 50, HealthCrate.CrateTypes.MissileCrate));
+                _isLastMissileCrateOn = true;
             }
         }
 
@@ -98,11 +133,15 @@ namespace Dogfight_Arena.Services
                 bullet.Remove();
                 
             }
-            if(go is Crate hc)
+            if(go is HealthCrate hc)
             {
                 lock (_objectListLock)
                 {
                     _ObjectsList.Remove(hc);
+                    if(hc.CrateType==HealthCrate.CrateTypes.MissileCrate)
+                        _isLastMissileCrateOn=false;
+                    else
+                        _isLastMissileCrateOn = true;
                 }
 
                 hc.Remove();
@@ -126,7 +165,7 @@ namespace Dogfight_Arena.Services
         {
             if (GameEvents.OnKeyPress != null)
             {
-                if (args.VirtualKey == Keys.ShootBulletLeftPlayer || args.VirtualKey==Keys.ShootBulletRightPlayer)
+                if (args.VirtualKey == Keys.ShootBulletLeftPlayer || args.VirtualKey==Keys.ShootBulletRightPlayer || args.VirtualKey == Keys.ShootMissileLeftPlayer)
                 {
                     GameEvents.OnKeyLeave(args.VirtualKey);
                 }
@@ -178,8 +217,9 @@ namespace Dogfight_Arena.Services
                         )
                         if(!RectHelper.Intersect(_ObjectsList[i].Rect(), _ObjectsList[j].Rect()).IsEmpty)
                         {
-                            if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Bullet) || (_ObjectsList[i] is Bullet && _ObjectsList[j] is Plane) || (_ObjectsList[i] is Plane && _ObjectsList[j] is Crate))
+                            if ((_ObjectsList[i] is Plane && _ObjectsList[j] is Bullet) || (_ObjectsList[i] is Bullet && _ObjectsList[j] is Plane) || (_ObjectsList[i] is Plane && _ObjectsList[j] is HealthCrate) || (_ObjectsList[i] is Plane && _ObjectsList[j] is Missile))
                             {
+                                
                                 _ObjectsList[i].Collide(_ObjectsList[j]);
                                 break;
                             }

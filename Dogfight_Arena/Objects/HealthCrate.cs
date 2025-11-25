@@ -9,14 +9,14 @@ using Windows.UI.Xaml.Controls;
 
 namespace Dogfight_Arena.Objects
 {
-    public class Crate:GameObject
+    public class HealthCrate:GameObject
     {
         public CrateTypes CrateType { get; set; }
         public enum CrateTypes
         {
             HealthCrate,MissileCrate
         }
-        public Crate(double x, double y, string fileName, Canvas field, double size, CrateTypes crateType) : base(x, y, fileName, field, size)
+        public HealthCrate(double x, double y, string fileName, Canvas field, double size, CrateTypes crateType) : base(x, y, fileName, field, size)
         {
             CrateType = crateType;
         }

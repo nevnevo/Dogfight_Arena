@@ -18,8 +18,8 @@ namespace Dogfight_Arena.Objects
 {
     public abstract class GameObject
     {
-        protected double _x;
-        protected double _y;
+        public double _x;
+        public double _y;
         protected Image _objectImage;
         protected Canvas _field;
         

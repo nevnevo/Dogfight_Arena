@@ -18,5 +18,6 @@ namespace Dogfight_Arena.Services
         public Action<GameObject> OnDelete;
         public Action<PlaneTypes> TakeHit;
         public Action<PlaneTypes> AddHealthPoint;
+        public Action<PlaneTypes> CreateMissile;
     }
 }

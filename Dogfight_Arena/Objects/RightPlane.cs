@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 
 namespace Dogfight_Arena.Objects
@@ -15,6 +17,12 @@ namespace Dogfight_Arena.Objects
         {
             PlaneType = PlaneTypes.RightPlane;
             _planeTypeConstant = -1;
+        }
+        public override Rect Rect()
+        {
+            Rect rct = base.Rect();
+            RectangleHelper.DrawTankRectangle(_field, rct.X, rct.Y, rct.Width, rct.Height,Colors.Black,(int)_angle);
+            return base.Rect();
         }
         protected override void Shoot(VirtualKey key)
         {

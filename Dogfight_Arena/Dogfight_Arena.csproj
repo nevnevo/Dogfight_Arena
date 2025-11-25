@@ -124,6 +124,7 @@
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Objects\HealthCrate.cs" />
     <Compile Include="Objects\LeftPlane.cs" />
+    <Compile Include="Objects\Missile.cs" />
     <Compile Include="Objects\Plane.cs" />
     <Compile Include="Objects\RightPlane.cs" />
     <Compile Include="Pages\GamePage.xaml.cs">
@@ -206,6 +207,7 @@
     <Content Include="Assets\Images\Bullet.png" />
     <Content Include="Assets\Images\healthCrate.png" />
     <Content Include="Assets\Images\LeftPlayer.png" />
+    <Content Include="Assets\Images\missile.png" />
     <Content Include="Assets\Images\MissileCrate.png" />
     <Content Include="Assets\Images\RightPlayer.png" />
     <Content Include="Properties\Default.rd.xml" />
