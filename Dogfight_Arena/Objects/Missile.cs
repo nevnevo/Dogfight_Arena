@@ -94,7 +94,7 @@ namespace Dogfight_Arena.Objects
         public override Rect Rect()
         {
             Rect rect = Plane.RotateRectAroundCenter2(base.Rect(), _angle);
-            RectangleHelper.DrawTankRectangle(_field, rect.X, rect.Y, _objectImage.Width, _objectImage.Height, Colors.Black, (int)_angle);
+            
             return rect;
         }
 

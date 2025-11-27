@@ -21,7 +21,7 @@ namespace Dogfight_Arena.Objects
         public override Rect Rect()
         {
             Rect rct = base.Rect();
-            RectangleHelper.DrawTankRectangle(_field, rct.X, rct.Y, rct.Width, rct.Height,Colors.Black,(int)_angle);
+            
             return base.Rect();
         }
         protected override void Shoot(VirtualKey key)

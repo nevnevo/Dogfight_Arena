@@ -218,7 +218,7 @@ namespace Dogfight_Arena.Objects
         {
             if(otherObject is Projectile projectile && projectile._ShootingPlayer!= PlaneType)
             {
-                GameManager.GameEvents.OnDelete(projectile);
+                
                 projectile.Remove();
 
                 if (GameManager.GameEvents.TakeHit != null)
