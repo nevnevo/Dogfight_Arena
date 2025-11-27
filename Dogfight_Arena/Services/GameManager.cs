@@ -165,7 +165,7 @@ namespace Dogfight_Arena.Services
         {
             if (GameEvents.OnKeyPress != null)
             {
-                if (args.VirtualKey == Keys.ShootBulletLeftPlayer || args.VirtualKey==Keys.ShootBulletRightPlayer || args.VirtualKey == Keys.ShootMissileLeftPlayer)
+                if (args.VirtualKey == Keys.ShootBulletLeftPlayer || args.VirtualKey==Keys.ShootBulletRightPlayer || args.VirtualKey == Keys.ShootMissileLeftPlayer || args.VirtualKey == Keys.ShootMissileRightPlayer)
                 {
                     GameEvents.OnKeyLeave(args.VirtualKey);
                 }

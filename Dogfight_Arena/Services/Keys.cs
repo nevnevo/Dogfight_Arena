@@ -22,10 +22,10 @@ namespace Dogfight_Arena.Services
         public static VirtualKey RotateCounterClockWiseRightPlayer = VirtualKey.Left;
 
         public static VirtualKey ShootBulletLeftPlayer = VirtualKey.E;
-        public static VirtualKey ShootBulletRightPlayer = VirtualKey.Space;
+        public static VirtualKey ShootBulletRightPlayer = VirtualKey.End;
 
         public static VirtualKey ShootMissileLeftPlayer = VirtualKey.Q;
-        public static VirtualKey ShootMissileRightPlayer = VirtualKey.M;
+        public static VirtualKey ShootMissileRightPlayer = VirtualKey.Insert;
 
     }
 }

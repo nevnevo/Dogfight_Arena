@@ -60,7 +60,8 @@ namespace Dogfight_Arena.Objects
                 double angleDiff = targetAngle - currentAngle;
                 angleDiff = ((angleDiff + 180) % 360 + 360) % 360 - 180;
 
-                if (angleDiff > 0)
+                if ((angleDiff > 0 && _ShootingPlayer==Plane.PlaneTypes.LeftPlane )||(angleDiff<0 && _ShootingPlayer==Plane.PlaneTypes.RightPlane))
+
                     Rotate(1);   // CCW
                 else
                     Rotate(-1);    // CW

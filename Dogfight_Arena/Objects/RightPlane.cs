@@ -32,6 +32,13 @@ namespace Dogfight_Arena.Objects
                 ShootBullet();
 
             }
+            else if (key == Keys.ShootMissileRightPlayer && MissileLeft > 0 && canShootMissile)
+            {
+                MissileLeft--;
+                ShootMissile();
+
+            }
+
         }
         protected override void Move(VirtualKey key)
         {
