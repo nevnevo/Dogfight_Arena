@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Dogfight_Arena.Communication;
 using Dogfight_Arena.Objects;
 using Windows.System;
 using static Dogfight_Arena.Objects.Plane;
@@ -19,5 +20,6 @@ namespace Dogfight_Arena.Services
         public Action<PlaneTypes> TakeHit;
         public Action<PlaneTypes> AddHealthPoint;
         public Action<PlaneTypes> CreateMissile;
+        public Action<Packet> PacketRecieved;
     }
 }

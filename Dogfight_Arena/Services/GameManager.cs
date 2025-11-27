@@ -1,4 +1,5 @@
-﻿using Dogfight_Arena.Objects;
+﻿using Dogfight_Arena.Communication;
+using Dogfight_Arena.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,8 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+using System.Net;
+using System.Net.Sockets;
 namespace Dogfight_Arena.Services
 {
     public class GameManager
@@ -27,25 +29,75 @@ namespace Dogfight_Arena.Services
         private bool _isLastHealthCrateOn = false;
         private bool _isLastMissileCrateOn = false;
         public static Events GameEvents { get; private set; } = new Events();
+        public static Client client = new Client(42069);
+        
+        //implement method to get other players ip
+        private string targetIp = "0.0.0.0";
+        private int targetPort = 42069;
+        
         public GameManager(Canvas field) 
         {
+            
+
             _field = field;
             _runTimer = new DispatcherTimer();
             _runTimer.Interval = TimeSpan.FromMilliseconds(1);
-            _runTimer.Start();
+            
             _runTimer.Tick += runTimer_Tick;
             _spawnHealthCratesTimer = new DispatcherTimer();
             _spawnHealthCratesTimer.Interval = TimeSpan.FromMilliseconds(10000);
-            
+
             if (!IsOnline)
             {//If the player chose to play offline
-                LocalPlayer = new LeftPlane(100, 100, "Images/LeftPlayer.png", field, PlayerWidth);
+                LocalPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
                 SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
                 _ObjectsList.Add(LocalPlayer);
                 _ObjectsList.Add(SecondPlayer);
                 _spawnHealthCratesTimer.Start();
                 _spawnHealthCratesTimer.Tick += _spawnCratesTimer_Tick;
+                _runTimer.Start();
             }
+            else 
+            {
+                client.InitializeConnection(IPAddress.Parse(targetIp), targetPort);
+                if (client._Side == Packet.PlayerSide.Left)
+                {
+                    LocalPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
+                    SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
+                }
+                else
+                {
+                    SecondPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
+                    LocalPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
+                }
+                _ObjectsList.Add(LocalPlayer);
+                _ObjectsList.Add(SecondPlayer);
+                
+                _spawnHealthCratesTimer.Tick += _spawnCratesTimer_Tick;
+                if (client._Side == Packet.PlayerSide.Left)
+                {
+                    Packet pkt = new Packet(Packet.PacketType.Ready);
+                    pkt.Data.Add("startingTime", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()+100);
+                    client.SendData(pkt);
+                }
+                else
+                {
+                    if (client.StartTime != 0)
+                    {
+                        long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        while (curTime != client.StartTime)
+                        {
+                            curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        }
+                        _runTimer.Start();
+                        _spawnHealthCratesTimer.Start();
+
+                    }
+                }
+                    
+
+            }
+
             
 
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
@@ -53,6 +105,12 @@ namespace Dogfight_Arena.Services
             GameEvents.OnShoot += OnShoot;
             GameEvents.OnDelete += DeleteObject;
             GameEvents.CreateMissile += CreateMissile;
+            GameEvents.PacketRecieved += PacketRecieved;
+        }
+
+        private void PacketRecieved(Packet packet)
+        {
+            
         }
 
         private void CreateMissile(Plane.PlaneTypes ShootingPlayer)
