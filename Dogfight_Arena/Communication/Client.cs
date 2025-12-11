@@ -30,7 +30,7 @@ namespace Dogfight_Arena.Communication
         private bool isInitialized = false;
         private bool _initializationFailed = false;
         public Packet.PlayerSide _Side;
-        private long _randomSeed;
+        public long _randomSeed;
         public long StartTime = 0;
 
         public Client(int localPort)
@@ -52,7 +52,7 @@ namespace Dogfight_Arena.Communication
             initPacket.Data.Add("proposedSide", Objects.Plane.PlaneTypes.LeftPlane);
             
             initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            initPacket.Data.Add("playerName", "RightNowItsEmpty");//******** implement here ********
+            initPacket.Data.Add("playerName", "RightNowItsEmpty");//******** implement here player's name********
             new Thread(Listen).Start();
             SendData(initPacket);
             while(!isInitialized && !_initializationFailed)//waiting for the initialization to be complete
@@ -135,6 +135,11 @@ namespace Dogfight_Arena.Communication
                 case (Packet.PacketType.Ready):
                     StartTime = (long)recievedPacket.Data["startingTime"];
                     break;
+                case (Packet.PacketType.Update):
+                    if (GameManager.GameEvents.PacketRecieved != null)
+                        GameManager.GameEvents.PacketRecieved(recievedPacket);
+                    break;
+
 
                 //case default:
                 //    if (GameManager.GameEvents.PacketRecieved != null)

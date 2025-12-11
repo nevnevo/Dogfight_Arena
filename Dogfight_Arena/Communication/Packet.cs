@@ -14,7 +14,8 @@ namespace Dogfight_Arena.Communication
             initGame,
             initiated,
             confirmHandshake,
-            Ready
+            Ready,
+            Update
         }
         public enum PlayerSide
         {

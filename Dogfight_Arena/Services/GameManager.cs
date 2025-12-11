@@ -111,6 +111,8 @@ namespace Dogfight_Arena.Services
         private void PacketRecieved(Packet packet)
         {
             
+            
+
         }
 
         private void CreateMissile(Plane.PlaneTypes ShootingPlayer)
@@ -141,18 +143,39 @@ namespace Dogfight_Arena.Services
 
         private void _spawnCratesTimer_Tick(object sender, object e)
         {
-            if (!_isLastHealthCrateOn)
+            if (!IsOnline)
             {
-                Random rnd = new Random();
-                _ObjectsList.Add(new HealthCrate(rnd.Next(0,(int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/healthCrate.png",_field,50, HealthCrate.CrateTypes.HealthCrate));
-                _isLastHealthCrateOn = true;
+                if (!_isLastHealthCrateOn)
+                {
+                    Random rnd = new Random();
+                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/healthCrate.png", _field, 50, HealthCrate.CrateTypes.HealthCrate));
+                    _isLastHealthCrateOn = true;
+                }
+                if (!_isLastMissileCrateOn)
+                {
+                    Random rnd = new Random();
+                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/MissileCrate.png", _field, 50, HealthCrate.CrateTypes.MissileCrate));
+                    _isLastMissileCrateOn = true;
+                }
             }
-            if (!_isLastMissileCrateOn)
+            else
             {
-                Random rnd = new Random();
-                _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/MissileCrate.png", _field, 50, HealthCrate.CrateTypes.MissileCrate));
-                _isLastMissileCrateOn = true;
+                if (client._randomSeed == 0)
+                    return;
+                if (!_isLastHealthCrateOn)
+                {
+                    Random rnd = new Random((int)client._randomSeed);
+                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/healthCrate.png", _field, 50, HealthCrate.CrateTypes.HealthCrate));
+                    _isLastHealthCrateOn = true;
+                }
+                if (!_isLastMissileCrateOn)
+                {
+                    Random rnd = new Random();
+                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/MissileCrate.png", _field, 50, HealthCrate.CrateTypes.MissileCrate));
+                    _isLastMissileCrateOn = true;
+                }
             }
+           
         }
 
         public void DeleteObject(GameObject go)
