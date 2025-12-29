@@ -12,9 +12,9 @@ namespace Dogfight_Arena.Objects
     {
         protected double _speedX;
         protected double _speedY;
-        protected double _speed;
+        public double _speed;
         protected double _accelerationX;
-        protected double _acceleration;
+        public double _acceleration;
         protected double _accelerationY;
         public double _angle;
         protected int _planeTypeConstant;

@@ -46,6 +46,7 @@ namespace Dogfight_Arena.Objects
             if (key == Keys.RotateCounterClockWiseLeftPlayer)
                 base.Rotate(1);
         }
+        
 
     }
 }

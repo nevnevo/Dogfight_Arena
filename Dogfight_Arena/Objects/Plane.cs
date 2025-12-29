@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Dogfight_Arena.Communication;
 using Dogfight_Arena.Services;
 using Windows.Foundation;
 using Windows.System;
@@ -43,7 +44,17 @@ namespace Dogfight_Arena.Objects
             GameManager.GameEvents.OnKeyPress -= Move;
             GameManager.GameEvents.OnKeyLeave -= Shoot;
         }
+        public virtual void SetNewData(Packet UpdatePkt)
+        {
+            this._x = (double)UpdatePkt.Data["X"];
+            this._y = (double)UpdatePkt.Data["Y"];
+            this._speed = (double)UpdatePkt.Data["speed"];
+            this._angle = (double)UpdatePkt.Data["angle"];
+            this._acceleration = (double)UpdatePkt.Data["acceleration"];
 
+
+
+        }
         protected virtual void Move(VirtualKey key)
         {
 
