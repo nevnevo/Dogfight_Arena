@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dogfight_Arena.Objects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -23,7 +24,7 @@ namespace Dogfight_Arena.Communication
             Right
         }
         public PacketType Type { get; set; }
-        public PlayerSide SenderSide { get; set; }
+        public Plane.PlaneTypes SenderSide { get; set; }
 
         public long Timestamp { get; set; }  
 

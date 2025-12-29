@@ -60,7 +60,7 @@ namespace Dogfight_Arena.Services
             else 
             {
                 client.InitializeConnection(IPAddress.Parse(targetIp), targetPort);
-                if (client._Side == Packet.PlayerSide.Left)
+                if (client._Side == Plane.PlaneTypes.LeftPlane)
                 {
                     LocalPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
                     SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
@@ -74,7 +74,7 @@ namespace Dogfight_Arena.Services
                 _ObjectsList.Add(SecondPlayer);
                 
                 _spawnHealthCratesTimer.Tick += _spawnCratesTimer_Tick;
-                if (client._Side == Packet.PlayerSide.Left)
+                if (client._Side == Plane.PlaneTypes.LeftPlane)
                 {
                     Packet pkt = new Packet(Packet.PacketType.Ready);
                     pkt.Data.Add("startingTime", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()+100);

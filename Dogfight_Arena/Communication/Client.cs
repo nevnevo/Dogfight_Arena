@@ -16,9 +16,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
 using System.Runtime.InteropServices;
 using Windows.Media.Protection.PlayReady;
-using System.Numerics;
-using Dogfight_Arena.Services;
 
+using Dogfight_Arena.Services;
+using Dogfight_Arena.Objects;
 
 namespace Dogfight_Arena.Communication
 {
@@ -29,7 +29,7 @@ namespace Dogfight_Arena.Communication
         private int _localPort;
         private bool isInitialized = false;
         private bool _initializationFailed = false;
-        public Packet.PlayerSide _Side;
+        public Plane.PlaneTypes _Side;
         public long _randomSeed;
         public long StartTime = 0;
 
@@ -52,7 +52,7 @@ namespace Dogfight_Arena.Communication
             initPacket.Data.Add("proposedSide", Objects.Plane.PlaneTypes.LeftPlane);
             
             initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            initPacket.Data.Add("playerName", "RightNowItsEmpty");//******** implement here player's name********
+            initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");//******** implement here player's name********
             new Thread(Listen).Start();
             SendData(initPacket);
             while(!isInitialized && !_initializationFailed)//waiting for the initialization to be complete
@@ -103,8 +103,8 @@ namespace Dogfight_Arena.Communication
             switch (recievedPacket.Type)
             {
                 case (Packet.PacketType.initGame):
-                    if ((Packet.PlayerSide)recievedPacket.Data["proposedSide"] != Packet.PlayerSide.Right)
-                        _Side = Packet.PlayerSide.Right;
+                    if ((Plane.PlaneTypes)recievedPacket.Data["proposedSide"] != Plane.PlaneTypes.RightPlane)
+                        _Side = Plane.PlaneTypes.RightPlane;
                     else
                         _initializationFailed = true;
                     _randomSeed = (long)recievedPacket.Data["randomSeed"];
@@ -115,7 +115,7 @@ namespace Dogfight_Arena.Communication
                     SendData(HandshakeAck);
                     break;
                 case (Packet.PacketType.initiated):
-                    if ((Packet.PlayerSide)recievedPacket.Data["acceptedSide"] != _Side)
+                    if ((Plane.PlaneTypes)recievedPacket.Data["acceptedSide"] != _Side)
                     {
                         _randomSeed = (long)recievedPacket.Data["randomSeed"];
                         Packet confirmHandshake = new Packet(Packet.PacketType.confirmHandshake);
@@ -127,7 +127,7 @@ namespace Dogfight_Arena.Communication
                         _initializationFailed = true;
                     break;
                 case (Packet.PacketType.confirmHandshake):
-                    if ((Packet.PlayerSide)recievedPacket.Data["acceptedSide"] != _Side && (long)recievedPacket.Data["randomSeed"] == _randomSeed)
+                    if ((Plane.PlaneTypes)recievedPacket.Data["acceptedSide"] != _Side && (long)recievedPacket.Data["randomSeed"] == _randomSeed)
                         isInitialized = true;
                     else
                         _initializationFailed = true;
