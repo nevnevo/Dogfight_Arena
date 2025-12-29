@@ -32,7 +32,7 @@ namespace Dogfight_Arena.Services
         public static Client client = new Client(42069);
         
         //implement method to get other players ip
-        private string targetIp = "0.0.0.0";
+        private string targetIp = "192.168.2.6";
         private int targetPort = 42069;
         
         public GameManager(Canvas field) 
