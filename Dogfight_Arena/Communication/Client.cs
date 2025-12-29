@@ -75,7 +75,19 @@ namespace Dogfight_Arena.Communication
 
         private void SendUpdatePkt(object sender, object e)
         {
-            Packet UpdatePacket = new Packet(Packet.PacketType.Update);
+
+           
+            if(GameManager._ObjectsList[0]!=null && GameManager._ObjectsList[0] is Plane)
+            {
+                Plane localPlane = (Plane)GameManager._ObjectsList[0];
+                Packet UpdatePacket = new Packet(Packet.PacketType.Update);
+                UpdatePacket.Data["X"] = localPlane._x;
+                UpdatePacket.Data["Y"] = localPlane._y;
+                UpdatePacket.Data["speed"] = localPlane._speed;
+                UpdatePacket.Data["acceleration"] = localPlane._acceleration;
+                UpdatePacket.Data["angle"] = localPlane._angle;
+            }
+           
 
         }
 

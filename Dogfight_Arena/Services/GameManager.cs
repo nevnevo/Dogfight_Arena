@@ -17,7 +17,7 @@ namespace Dogfight_Arena.Services
     {
         public static bool IsOnline { get; set; }
         private readonly object _objectListLock = new object();
-        public List<GameObject> _ObjectsList = new List<GameObject>();
+        public static List<GameObject>  _ObjectsList = new List<GameObject>();
 
         private DispatcherTimer _runTimer;
         private DispatcherTimer _spawnHealthCratesTimer;
@@ -143,6 +143,8 @@ namespace Dogfight_Arena.Services
             }
 
         }
+
+       
 
         private void _spawnCratesTimer_Tick(object sender, object e)
         {
