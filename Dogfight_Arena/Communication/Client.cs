@@ -32,6 +32,7 @@ namespace Dogfight_Arena.Communication
         public Plane.PlaneTypes _Side;
         public long _randomSeed;
         public long StartTime = 0;
+        private DispatcherTimer UpdateTimer;
 
         public Client(int localPort)
         {
@@ -41,7 +42,7 @@ namespace Dogfight_Arena.Communication
             
            
         }
-        public void InitializeConnection(IPAddress targetIp,int targetPort)
+        public object InitializeConnection(IPAddress targetIp,int targetPort)
         {
             
             _udpClient = new UdpClient(_localPort);
@@ -60,7 +61,9 @@ namespace Dogfight_Arena.Communication
 
             if (!_initializationFailed)
             {
-
+                UpdateTimer = new DispatcherTimer();
+                UpdateTimer.Interval = TimeSpan.FromMilliseconds(25);
+                UpdateTimer.Tick += SendUpdatePkt;
             }
 
             
@@ -69,6 +72,13 @@ namespace Dogfight_Arena.Communication
 
 
         }
+
+        private void SendUpdatePkt(object sender, object e)
+        {
+            Packet UpdatePacket = new Packet(Packet.PacketType.Update);
+
+        }
+
         public void SendData(Packet packet)
         {
             string jsonData = JsonConvert.SerializeObject(packet);

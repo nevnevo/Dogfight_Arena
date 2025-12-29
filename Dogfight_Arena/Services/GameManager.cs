@@ -110,7 +110,10 @@ namespace Dogfight_Arena.Services
 
         private void PacketRecieved(Packet packet)
         {
-            
+            if (packet != null)
+            {
+                LocalPlayer.SetNewData(packet);
+            }
             
 
         }
