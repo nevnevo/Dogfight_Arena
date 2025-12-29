@@ -42,7 +42,7 @@ namespace Dogfight_Arena.Communication
             
            
         }
-        public object InitializeConnection(IPAddress targetIp,int targetPort)
+        public void InitializeConnection(IPAddress targetIp,int targetPort)
         {
             
             _udpClient = new UdpClient(_localPort);
@@ -53,7 +53,7 @@ namespace Dogfight_Arena.Communication
             initPacket.Data.Add("proposedSide", Objects.Plane.PlaneTypes.LeftPlane);
             
             initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");//******** implement here player's name********
+            initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");//******** implement here player's name******** 
             new Thread(Listen).Start();
             SendData(initPacket);
             while(!isInitialized && !_initializationFailed)//waiting for the initialization to be complete
