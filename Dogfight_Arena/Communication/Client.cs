@@ -50,7 +50,7 @@ namespace Dogfight_Arena.Communication
             _udpClient.Client.ReceiveTimeout = 30000; // 10 seconds
 
             Packet initPacket = new Packet(Packet.PacketType.initGame);
-            initPacket.Data.Add("proposedSide", Objects.Plane.PlaneTypes.LeftPlane);
+            initPacket.Data.Add("proposedSide", Plane.PlaneTypes.LeftPlane);
             
             initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");//******** implement here player's name******** 
@@ -125,7 +125,8 @@ namespace Dogfight_Arena.Communication
             switch (recievedPacket.Type)
             {
                 case (Packet.PacketType.initGame):
-                    if ((Plane.PlaneTypes)recievedPacket.Data["proposedSide"] != Plane.PlaneTypes.RightPlane)
+                    int a = Convert.ToInt32(recievedPacket.Data["proposedSide"]);
+                    if ((Plane.PlaneTypes)a != Plane.PlaneTypes.RightPlane)
                         _Side = Plane.PlaneTypes.RightPlane;
                     else
                         _initializationFailed = true;
