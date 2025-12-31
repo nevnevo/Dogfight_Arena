@@ -9,6 +9,7 @@ using Dogfight_Arena.Services;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -140,7 +141,19 @@ namespace Dogfight_Arena.Objects
 
             }
         }
+        public async Task SetAngleAsync()
+        {
+            var dispatcher = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher;
 
+            if (dispatcher.HasThreadAccess)
+            {
+                SetAngle();
+            }
+            else
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, SetAngle);
+            }
+        }
         public void SetAngle()
         {
             var rotateTransform = new RotateTransform
