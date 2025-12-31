@@ -51,7 +51,7 @@ namespace Dogfight_Arena.Objects
             this._speed = (double)UpdatePkt.Data["speed"];
             this._angle = (double)UpdatePkt.Data["angle"];
             this._acceleration = (double)UpdatePkt.Data["acceleration"];
-
+            Render();
 
 
         }

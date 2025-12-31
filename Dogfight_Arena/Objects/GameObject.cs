@@ -52,10 +52,19 @@ namespace Dogfight_Arena.Objects
             return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Height - 15);
 
         }
+        public virtual async Task RenderAsync()
+        {
+            await Windows.ApplicationModel.Core.CoreApplication
+                .MainView.CoreWindow.Dispatcher
+                .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    Canvas.SetLeft(_objectImage, _x);
+                    Canvas.SetTop(_objectImage, _y);
+                });
+        }
         public virtual void Render()
         {
-            Canvas.SetLeft(_objectImage, _x);
-            Canvas.SetTop(_objectImage, _y);
+            _ = RenderAsync();
 
         }
         public virtual void Collide(GameObject otherObject) { }

@@ -101,7 +101,7 @@ namespace Dogfight_Arena.Services
                     if (client.StartTime != 0)
                     {
                         long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                        while (curTime != client.StartTime)
+                        while (curTime < client.StartTime)
                         {
                             curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                         }
