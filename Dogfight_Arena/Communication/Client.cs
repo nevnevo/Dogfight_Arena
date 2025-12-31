@@ -138,7 +138,7 @@ namespace Dogfight_Arena.Communication
                     SendData(HandshakeAck);
                     break;
                 case (Packet.PacketType.initiated):
-                    if ((int)recievedPacket.Data["acceptedSide"] != ((int)_Side))
+                    if (Convert.ToInt32(recievedPacket.Data["acceptedSide"]) != ((int)_Side))
                     {
                         _randomSeed = (long)recievedPacket.Data["randomSeed"];
                         Packet confirmHandshake = new Packet(Packet.PacketType.confirmHandshake);
@@ -150,7 +150,7 @@ namespace Dogfight_Arena.Communication
                         _initializationFailed = true;
                     break;
                 case (Packet.PacketType.confirmHandshake):
-                    if ((Plane.PlaneTypes)recievedPacket.Data["acceptedSide"] != _Side && (long)recievedPacket.Data["randomSeed"] == _randomSeed)
+                    if ((Plane.PlaneTypes)recievedPacket.Data["setSide"] != _Side && (long)recievedPacket.Data["randomSeed"] == _randomSeed)
                         isInitialized = true;
                     else
                         _initializationFailed = true;
