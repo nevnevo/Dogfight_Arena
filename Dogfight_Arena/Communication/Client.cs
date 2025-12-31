@@ -138,13 +138,13 @@ namespace Dogfight_Arena.Communication
                     SendData(HandshakeAck);
                     break;
                 case (Packet.PacketType.initiated):
-                    if ((Plane.PlaneTypes)recievedPacket.Data["acceptedSide"] != _Side)
+                    if ((int)recievedPacket.Data["acceptedSide"] != ((int)_Side))
                     {
                         _randomSeed = (long)recievedPacket.Data["randomSeed"];
                         Packet confirmHandshake = new Packet(Packet.PacketType.confirmHandshake);
                         confirmHandshake.Data.Add("setSide",_Side);
                         SendData(confirmHandshake);
-                        
+
                     }
                     else
                         _initializationFailed = true;

@@ -29,7 +29,7 @@ namespace Dogfight_Arena.Services
         private bool _isLastHealthCrateOn = false;
         private bool _isLastMissileCrateOn = false;
         public static Events GameEvents { get; private set; } = new Events();
-        public static Client client = new Client(42069);
+        public static Client client = new Client(42068);
         
         //implement method to get other players ip
         private string targetIp = "192.168.2.6";
