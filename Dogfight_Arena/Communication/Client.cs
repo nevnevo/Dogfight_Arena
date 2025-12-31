@@ -62,7 +62,7 @@ namespace Dogfight_Arena.Communication
             if (!_initializationFailed)
             {
                 UpdateTimer = new DispatcherTimer();
-                UpdateTimer.Interval = TimeSpan.FromMilliseconds(25);
+                UpdateTimer.Interval = TimeSpan.FromMilliseconds(5);
                 UpdateTimer.Tick += SendUpdatePkt;
                 UpdateTimer.Start();
             }
