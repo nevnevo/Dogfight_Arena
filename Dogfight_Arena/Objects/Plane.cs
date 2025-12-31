@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dogfight_Arena.Communication;
 using Dogfight_Arena.Services;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
@@ -141,34 +142,36 @@ namespace Dogfight_Arena.Objects
 
             }
         }
-        public async Task SetAngleAsync()
+        public async Task SetAngle()
         {
-            var dispatcher = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher;
+            var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
 
             if (dispatcher.HasThreadAccess)
             {
-                SetAngle();
+                // --- your code (unchanged) ---
+                var rotateTransform = new RotateTransform
+                {
+                    Angle = _angle, // The rotation angle in degrees (set initial angle to 0)
+                    CenterX = _objectImage.ActualWidth / 2, // Rotate around the center of the image
+                    CenterY = _objectImage.ActualHeight / 2 // Rotate around the center of the image
+                };
+                _objectImage.RenderTransform = rotateTransform;
+                // --- end your code ---
+                return;
             }
-            else
-            {
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, SetAngle);
-            }
-        }
-        public void SetAngle()
-        {
-            var rotateTransform = new RotateTransform
-            {
-                Angle = _angle, // The rotation angle in degrees (set initial angle to 0)
-                CenterX = _objectImage.ActualWidth / 2, // Rotate around the center of the image
-                CenterY = _objectImage.ActualHeight / 2 // Rotate around the center of the image
-            };
 
-            // Apply the RotateTransform to the RenderTransform of the image
-            _objectImage.RenderTransform = rotateTransform;
-
-            // Update the rotation on every update (e.g., when button is clicked, etc.)
-            
-            rotateTransform.Angle = _angle;
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                // --- your code (unchanged) ---
+                var rotateTransform = new RotateTransform
+                {
+                    Angle = _angle, // The rotation angle in degrees (set initial angle to 0)
+                    CenterX = _objectImage.ActualWidth / 2, // Rotate around the center of the image
+                    CenterY = _objectImage.ActualHeight / 2 // Rotate around the center of the image
+                };
+                _objectImage.RenderTransform = rotateTransform;
+                // --- end your code ---
+            });
         }
         private (double, double) CalculateCenterPointProjectile()
         {
