@@ -46,9 +46,21 @@ namespace Dogfight_Arena.Pages
             
             GameManager.GameEvents.TakeHit += TakeHit;
             GameManager.GameEvents.AddHealthPoint += AddHealthPoint;
+            if (GameManager.IsOnline)
+            {
+                if (GameManager.LocalPlayerType == Plane.PlaneTypes.LeftPlane)
+                {
+                    sideOfLocalPlayer.Text = "Side: Blue";
+                }
+                else
+                {
+                    sideOfLocalPlayer.Text = "Side: Red";
+                }
+            }
             
-            
-                
+
+
+
 
 
         }

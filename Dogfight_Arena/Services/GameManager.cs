@@ -30,7 +30,7 @@ namespace Dogfight_Arena.Services
         private bool _isLastMissileCrateOn = false;
         public static Events GameEvents { get; private set; } = new Events();
         public static Client client = new Client(42069);
-        
+        public static Plane.PlaneTypes LocalPlayerType;
         //implement method to get other players ip
         private string targetIp = "10.0.0.17";
         private int targetPort = 42069;
@@ -60,10 +60,12 @@ namespace Dogfight_Arena.Services
             else 
             {
                 client.InitializeConnection(IPAddress.Parse(targetIp), targetPort);
+                LocalPlayerType = client._Side;
                 if (client._Side == Plane.PlaneTypes.LeftPlane)
                 {
                     LocalPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
                     SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
+                    
                 }
                 else
                 {
@@ -128,7 +130,7 @@ namespace Dogfight_Arena.Services
         {
             if (packet != null)
             {
-                LocalPlayer.SetNewData(packet);
+                SecondPlayer.SetNewData(packet);
             }
             
 

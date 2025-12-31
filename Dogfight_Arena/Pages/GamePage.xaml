@@ -40,6 +40,7 @@
         <Canvas Grid.Row="1" Grid.Column="0" Grid.RowSpan="9" Grid.ColumnSpan="11" x:Name="GameCanvas"></Canvas>
         <TextBlock x:Name="healthBarLeftPlayer" Grid.Row="0" Grid.Column="1" FontSize="40" Text="5❤️"></TextBlock>
         <TextBlock x:Name="healthBarRightPlayer" Grid.Row="0" Grid.Column="9" FontSize="40" Text="❤️5"></TextBlock>
+        <TextBlock x:Name="sideOfLocalPlayer" Grid.Row="0" Grid.Column="5" FontSize="40" Text=""></TextBlock>
 
         <ContentDialog
             x:Name="InescapableDialog"
