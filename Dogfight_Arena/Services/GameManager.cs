@@ -77,8 +77,9 @@ namespace Dogfight_Arena.Services
                 if (client._Side == Plane.PlaneTypes.LeftPlane)
                 {
                     Packet pkt = new Packet(Packet.PacketType.Ready);
-                    pkt.Data.Add("startingTime", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()+100);
+                    pkt.Data.Add("startingTime", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()+5000);
                     client.SendData(pkt);
+                    client.StartTime = (long)pkt.Data["startingTime"];
                     if (client.StartTime != 0)
                     {
                         long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
