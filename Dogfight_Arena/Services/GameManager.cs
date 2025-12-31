@@ -79,6 +79,17 @@ namespace Dogfight_Arena.Services
                     Packet pkt = new Packet(Packet.PacketType.Ready);
                     pkt.Data.Add("startingTime", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()+100);
                     client.SendData(pkt);
+                    if (client.StartTime != 0)
+                    {
+                        long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        while (curTime != client.StartTime)
+                        {
+                            curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        }
+                        _runTimer.Start();
+                        _spawnHealthCratesTimer.Start();
+
+                    }
                 }
                 else
                 {
