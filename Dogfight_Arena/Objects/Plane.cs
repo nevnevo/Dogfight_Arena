@@ -51,6 +51,7 @@ namespace Dogfight_Arena.Objects
             this._speed = (double)UpdatePkt.Data["speed"];
             this._angle = (double)UpdatePkt.Data["angle"];
             this._acceleration = (double)UpdatePkt.Data["acceleration"];
+            SetAngle();
             Render();
 
 
@@ -140,7 +141,22 @@ namespace Dogfight_Arena.Objects
             }
         }
 
-        
+        public void SetAngle()
+        {
+            var rotateTransform = new RotateTransform
+            {
+                Angle = _angle, // The rotation angle in degrees (set initial angle to 0)
+                CenterX = _objectImage.ActualWidth / 2, // Rotate around the center of the image
+                CenterY = _objectImage.ActualHeight / 2 // Rotate around the center of the image
+            };
+
+            // Apply the RotateTransform to the RenderTransform of the image
+            _objectImage.RenderTransform = rotateTransform;
+
+            // Update the rotation on every update (e.g., when button is clicked, etc.)
+            
+            rotateTransform.Angle = _angle;
+        }
         private (double, double) CalculateCenterPointProjectile()
         {
             return (
