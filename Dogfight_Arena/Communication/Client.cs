@@ -65,7 +65,7 @@ namespace Dogfight_Arena.Communication
                 UpdateTimer.Interval = TimeSpan.FromMilliseconds(5);
                 UpdateTimer.Tick += SendUpdatePkt;
                 UpdateTimer.Start();
-            }
+            }//
 
             
 
