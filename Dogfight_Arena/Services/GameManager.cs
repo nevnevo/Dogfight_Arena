@@ -94,6 +94,10 @@ namespace Dogfight_Arena.Services
                 }
                 else
                 {
+                    while(client.StartTime == 0)
+                    {
+                        continue;
+                    }
                     if (client.StartTime != 0)
                     {
                         long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
