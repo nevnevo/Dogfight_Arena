@@ -50,11 +50,11 @@ namespace Dogfight_Arena.Pages
             {
                 if (GameManager.LocalPlayerType == Plane.PlaneTypes.LeftPlane)
                 {
-                    sideOfLocalPlayer.Text = "Side: Blue";
+                    sideOfLocalPlayer.Text = "Blue";
                 }
                 else
                 {
-                    sideOfLocalPlayer.Text = "Side: Red";
+                    sideOfLocalPlayer.Text = "Red";
                 }
             }
             
