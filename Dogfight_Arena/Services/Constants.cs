@@ -19,5 +19,7 @@ namespace Dogfight_Arena.Services
         public static double ProjectileTimeToLive = 100;//time to live in milliseconds ==> 5 seconds
 
         public static double BulletSpeed = 25;
+
+        public static readonly int WINDOWSIZE = 800;
     }
 }

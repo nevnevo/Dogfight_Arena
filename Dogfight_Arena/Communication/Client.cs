@@ -175,14 +175,17 @@ namespace Dogfight_Arena.Communication
                     if (GameManager.GameEvents.PacketRecieved != null)
                         GameManager.GameEvents.PacketRecieved(recievedPacket);
                     break;
+                case (Packet.PacketType.OnShoot):
+                    string[] keyNames = new string[];
+                    break;
 
 
-                //case default:
-                //    if (GameManager.GameEvents.PacketRecieved != null)
-                //    {
-                //        GameManager.GameEvents.PacketRecieved(recievedPacket);
-                //    }
-                //    break;
+                    //case default:
+                    //    if (GameManager.GameEvents.PacketRecieved != null)
+                    //    {
+                    //        GameManager.GameEvents.PacketRecieved(recievedPacket);
+                    //    }
+                    //    break;
 
 
             }

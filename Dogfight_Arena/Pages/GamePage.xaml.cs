@@ -16,6 +16,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using static Dogfight_Arena.Objects.Plane;
+using Windows.UI.ViewManagement;
+using Windows.Foundation;
+
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -34,7 +37,6 @@ namespace Dogfight_Arena.Pages
         {
             this.InitializeComponent();
             
-
 
         }
 

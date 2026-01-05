@@ -32,7 +32,7 @@ namespace Dogfight_Arena.Services
         public static Client client = new Client(42069);
         public static Plane.PlaneTypes LocalPlayerType;
         //implement method to get other players ip
-        private string targetIp = "10.0.0.17";
+        private string targetIp = "192.168.2.6";
         private int targetPort = 42069;
         
         public GameManager(Canvas field) 
@@ -188,13 +188,13 @@ namespace Dogfight_Arena.Services
                 if (!_isLastHealthCrateOn)
                 {
                     Random rnd = new Random((int)client._randomSeed);
-                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/healthCrate.png", _field, 50, HealthCrate.CrateTypes.HealthCrate));
+                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, Constants.WINDOWSIZE), rnd.Next(0, Constants.WINDOWSIZE), "Images/healthCrate.png", _field, 50, HealthCrate.CrateTypes.HealthCrate));
                     _isLastHealthCrateOn = true;
                 }
                 if (!_isLastMissileCrateOn)
                 {
                     Random rnd = new Random();
-                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, (int)_field.ActualWidth), rnd.Next(0, (int)_field.ActualHeight), "Images/MissileCrate.png", _field, 50, HealthCrate.CrateTypes.MissileCrate));
+                    _ObjectsList.Add(new HealthCrate(rnd.Next(0, Constants.WINDOWSIZE), rnd.Next(0, Constants.WINDOWSIZE), "Images/MissileCrate.png", _field, 50, HealthCrate.CrateTypes.MissileCrate));
                     _isLastMissileCrateOn = true;
                 }
             }
