@@ -176,7 +176,31 @@ namespace Dogfight_Arena.Communication
                         GameManager.GameEvents.PacketRecieved(recievedPacket);
                     break;
                 case (Packet.PacketType.OnShoot):
-                    string[] keyNames = new string[];
+                    string[] keyNames = new string[4];
+                    keyNames[0] = "X";
+                    keyNames[1] = "Y";
+                    keyNames[2] = "angle";
+                    keyNames[3] = "side";
+
+                    
+                    foreach(string key in keyNames)
+                    {
+                        try
+                        {
+                            if (recievedPacket.Data[key] == null)
+                                break;
+                        }
+                        catch (Exception e)
+                        {
+                            break;
+                        }
+                    }
+                    //if we got to this stage without breaking it means the packet is valid
+
+                    Projectile proj = new Projectile(Convert.ToInt32(recievedPacket.Data["X"]), Convert.ToInt32(recievedPacket.Data["Y"]), "Images/Bullet.png", GameManager._field,5, Convert.ToDouble(recievedPacket.Data["angle"]), (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]));
+                    if (GameManager.GameEvents.OnShoot != null)
+                        GameManager.GameEvents.OnShoot(proj);
+                    
                     break;
 
 

@@ -24,7 +24,7 @@ namespace Dogfight_Arena.Services
         private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>(); //Hashset is used to avoid duplicatekeys,because it can contain only unique values
         private Plane LocalPlayer;
         private Plane SecondPlayer;
-        private Canvas _field;
+        public static Canvas _field;
         private int PlayerWidth = 100;
         private bool _isLastHealthCrateOn = false;
         private bool _isLastMissileCrateOn = false;
