@@ -175,8 +175,11 @@ namespace Dogfight_Arena.Communication
                     break;
                 case (Packet.PacketType.Update):
                     if (GameManager.GameEvents.PacketRecieved != null)
-                        Debug.WriteLine($"Speed recieved: {recievedPacket.Data["speed"]}");
-                    GameManager.GameEvents.PacketRecieved(recievedPacket);
+                    {
+                        Debug.WriteLine($"Speed recieved: {}");
+                        GameManager.GameEvents.PacketRecieved(recievedPacket);
+                    }
+                        
                     break;
                 case (Packet.PacketType.OnShoot):
                     string[] keyNames = new string[4];

@@ -61,9 +61,9 @@ namespace Dogfight_Arena.Objects
         }
         public virtual void SetNewData(Packet UpdatePkt)
         {
-            var (centerX, centerY) = CalculateCenterPointProjectile();
-            centerX = (double)UpdatePkt.Data["X"];
-            centerY = (double)UpdatePkt.Data["Y"];
+           
+            this._x = (double)UpdatePkt.Data["X"];
+            this._y = (double)UpdatePkt.Data["Y"];
             this._speed = (double)UpdatePkt.Data["speed"];
             this._angle = (double)UpdatePkt.Data["angle"];
             this._acceleration = (double)UpdatePkt.Data["acceleration"];
