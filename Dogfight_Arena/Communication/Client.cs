@@ -19,6 +19,7 @@ using Windows.Media.Protection.PlayReady;
 
 using Dogfight_Arena.Services;
 using Dogfight_Arena.Objects;
+using System.Diagnostics;
 
 namespace Dogfight_Arena.Communication
 {
@@ -85,8 +86,9 @@ namespace Dogfight_Arena.Communication
                 UpdatePacket.Data["X"] = localPlane._x;
                 UpdatePacket.Data["Y"] = localPlane._y;
                 UpdatePacket.Data["speed"] = localPlane._speed;
-                UpdatePacket.Data["acceleration"] = 0;
+                UpdatePacket.Data["acceleration"] = localPlane._acceleration;
                 UpdatePacket.Data["angle"] = localPlane._angle;
+                Debug.WriteLine($"Speed sent: {localPlane._speed}");
                 SendData(UpdatePacket);
             }
 
@@ -173,7 +175,8 @@ namespace Dogfight_Arena.Communication
                     break;
                 case (Packet.PacketType.Update):
                     if (GameManager.GameEvents.PacketRecieved != null)
-                        GameManager.GameEvents.PacketRecieved(recievedPacket);
+                        Debug.WriteLine($"Speed recieved: {recievedPacket.Data["speed"]}");
+                    GameManager.GameEvents.PacketRecieved(recievedPacket);
                     break;
                 case (Packet.PacketType.OnShoot):
                     string[] keyNames = new string[4];

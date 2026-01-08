@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
-
+using System.Diagnostics;
 namespace Dogfight_Arena.Objects
 {
     public abstract class GameMovingObject : GameObject
