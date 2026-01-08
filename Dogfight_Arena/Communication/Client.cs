@@ -176,7 +176,7 @@ namespace Dogfight_Arena.Communication
                 case (Packet.PacketType.Update):
                     if (GameManager.GameEvents.PacketRecieved != null)
                     {
-                        Debug.WriteLine($"Speed recieved: {}");
+                        Debug.WriteLine($"Speed recieved: ");
                         GameManager.GameEvents.PacketRecieved(recievedPacket);
                     }
                         
