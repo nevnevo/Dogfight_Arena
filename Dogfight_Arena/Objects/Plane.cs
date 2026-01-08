@@ -39,7 +39,15 @@ namespace Dogfight_Arena.Objects
 
         protected virtual void Shoot(VirtualKey key)
         {
-            
+            if (GameManager.IsOnline)
+            {
+                Packet pkt = new Packet(Packet.PacketType.OnShoot);
+                pkt.Data["X"] = _x;
+                pkt.Data["Y"] = _y;
+                pkt.Data["angle"] = _angle;
+                pkt.Data["side"] = PlaneType;
+                GameManager.client.SendData(pkt);
+            }
         }
         public void UnsubscribeEvents()
         {

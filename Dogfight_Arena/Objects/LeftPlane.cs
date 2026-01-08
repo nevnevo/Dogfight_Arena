@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Xaml.Controls;
-
+using Dogfight_Arena.Communication;
 namespace Dogfight_Arena.Objects
 {
     public class LeftPlane : Plane
@@ -21,6 +21,7 @@ namespace Dogfight_Arena.Objects
             if (key == Keys.ShootBulletLeftPlayer && BulletsLeft > 0)
             {
                 BulletsLeft--;
+                base.Shoot(key);
                 ShootBullet();
                 
             }
