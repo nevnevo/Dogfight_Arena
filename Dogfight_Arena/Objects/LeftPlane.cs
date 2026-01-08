@@ -18,19 +18,23 @@ namespace Dogfight_Arena.Objects
         }
         protected override void Shoot(VirtualKey key)
         {
-            if (key == Keys.ShootBulletLeftPlayer && BulletsLeft > 0)
+            if(!GameManager.IsOnline || GameManager.LocalPlayerType == PlaneType)
             {
-                BulletsLeft--;
-                base.Shoot(key);
-                ShootBullet();
-                
-            }
-             if (key == Keys.ShootMissileLeftPlayer && MissileLeft>0 && canShootMissile)
-            {
-                MissileLeft--;
-                ShootMissile();
+                if (key == Keys.ShootBulletLeftPlayer && BulletsLeft > 0)
+                {
+                    BulletsLeft--;
+                    base.Shoot(key);
+                    ShootBullet();
 
+                }
+                if (key == Keys.ShootMissileLeftPlayer && MissileLeft > 0 && canShootMissile)
+                {
+                    MissileLeft--;
+                    ShootMissile();
+
+                }
             }
+            
             
         }
 
