@@ -188,15 +188,16 @@ namespace Dogfight_Arena.Services
             {
                 if (client._randomSeed == 0)
                     return;
+                Random rnd = new Random((int)client._randomSeed);
                 if (!_isLastHealthCrateOn)
                 {
-                    Random rnd = new Random((int)client._randomSeed);
+                    
                     _ObjectsList.Add(new HealthCrate(rnd.Next(0, Constants.WINDOWSIZE), rnd.Next(0, Constants.WINDOWSIZE), "Images/healthCrate.png", _field, 50, HealthCrate.CrateTypes.HealthCrate));
                     _isLastHealthCrateOn = true;
                 }
                 if (!_isLastMissileCrateOn)
                 {
-                    Random rnd = new Random();
+                   
                     _ObjectsList.Add(new HealthCrate(rnd.Next(0, Constants.WINDOWSIZE), rnd.Next(0, Constants.WINDOWSIZE), "Images/MissileCrate.png", _field, 50, HealthCrate.CrateTypes.MissileCrate));
                     _isLastMissileCrateOn = true;
                 }
