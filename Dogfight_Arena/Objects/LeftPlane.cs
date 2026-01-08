@@ -23,13 +23,14 @@ namespace Dogfight_Arena.Objects
                 if (key == Keys.ShootBulletLeftPlayer && BulletsLeft > 0)
                 {
                     BulletsLeft--;
-                    base.Shoot(key);
+                    base.Shoot(VirtualKey.B);
                     ShootBullet();
 
                 }
                 if (key == Keys.ShootMissileLeftPlayer && MissileLeft > 0 && canShootMissile)
                 {
                     MissileLeft--;
+                    base.Shoot(VirtualKey.M);
                     ShootMissile();
 
                 }

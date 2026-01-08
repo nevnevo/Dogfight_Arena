@@ -182,11 +182,12 @@ namespace Dogfight_Arena.Communication
                         
                     break;
                 case (Packet.PacketType.OnShoot):
-                    string[] keyNames = new string[4];
+                    string[] keyNames = new string[5];
                     keyNames[0] = "X";
                     keyNames[1] = "Y";
                     keyNames[2] = "angle";
                     keyNames[3] = "side";
+                    keyNames[4] = "image";
 
 
                     foreach (string key in keyNames)
@@ -202,7 +203,7 @@ namespace Dogfight_Arena.Communication
                         }
                     }
                     //if we got to this stage without breaking it means the packet is valid
-
+                    
                     await Windows.ApplicationModel.Core.CoreApplication
                  .MainView.CoreWindow.Dispatcher
                  .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
@@ -210,7 +211,7 @@ namespace Dogfight_Arena.Communication
                      var proj = new Bullet(
                          Convert.ToInt32(recievedPacket.Data["X"]),
                          Convert.ToInt32(recievedPacket.Data["Y"]),
-                         "Images/Bullet.png",
+                         Convert.ToString(recievedPacket.Data["image"]),
                          GameManager._field,
                          5,
                          Convert.ToDouble(recievedPacket.Data["angle"]),

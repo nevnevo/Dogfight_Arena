@@ -42,7 +42,7 @@ namespace Dogfight_Arena.Objects
             imageHeight = _objectImage.Height;
         }
 
-        protected virtual void Shoot(VirtualKey key)
+        protected virtual void Shoot(VirtualKey key)//if key is B it means we shot a bullet; if key is M it means we shot a missile
         {
             if (GameManager.IsOnline)
             {
@@ -52,6 +52,10 @@ namespace Dogfight_Arena.Objects
                 pkt.Data["Y"] = centerY;
                 pkt.Data["angle"] = _angle;
                 pkt.Data["side"] = PlaneType;
+                if(key == VirtualKey.B)
+                    pkt.Data["image"] = "images/Bullet.png";
+                if (key == VirtualKey.M)
+                    pkt.Data["image"] = "images/missile.png";
                 GameManager.client.SendData(pkt);
             }
         }
