@@ -24,7 +24,10 @@ namespace Dogfight_Arena.Objects
         public int BulletsLeft = 2;
         public int MissileLeft = 0;
         public bool canShootMissile = false;
-        
+
+        private double imageWidth;
+        private double imageHeight;
+
         public enum PlaneTypes
         {
             LeftPlane,RightPlane
@@ -35,6 +38,8 @@ namespace Dogfight_Arena.Objects
             GameManager.GameEvents.OnKeyLeave += Shoot;
             _speed = Constants.MinSpeed;
             _objectImage.Height = _objectImage.Width * 0.932;
+            imageWidth = _objectImage.Width;
+            imageHeight = _objectImage.Height;
         }
 
         protected virtual void Shoot(VirtualKey key)
@@ -185,8 +190,8 @@ namespace Dogfight_Arena.Objects
         private (double, double) CalculateCenterPointProjectile()
         {
             return (
-                _x + _objectImage.Width / 2,
-                _y + _objectImage.Width / 2
+                _x + imageWidth / 2,
+                _y + imageHeight / 2
             );
         }
         private static Vector2 RotatePointsAroundAxis(Vector2 point, double centerX, double centerY, double angleInRadians)
