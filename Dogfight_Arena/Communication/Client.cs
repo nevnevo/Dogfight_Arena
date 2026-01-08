@@ -37,26 +37,26 @@ namespace Dogfight_Arena.Communication
         public Client(int localPort)
         {
             _localPort = localPort;
-            
 
-            
-           
+
+
+
         }
-        public void InitializeConnection(IPAddress targetIp,int targetPort)
+        public void InitializeConnection(IPAddress targetIp, int targetPort)
         {
-            
+
             _udpClient = new UdpClient(_localPort);
             _endPoint = new IPEndPoint(targetIp, targetPort);
             _udpClient.Client.ReceiveTimeout = 30000; // 10 seconds
 
             Packet initPacket = new Packet(Packet.PacketType.initGame);
             initPacket.Data.Add("proposedSide", Plane.PlaneTypes.LeftPlane);
-            
+
             initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");//******** implement here player's name******** 
             new Thread(Listen).Start();
             SendData(initPacket);
-            while(!isInitialized && !_initializationFailed)//waiting for the initialization to be complete
+            while (!isInitialized && !_initializationFailed)//waiting for the initialization to be complete
                 continue;
 
             if (!_initializationFailed)
@@ -67,7 +67,7 @@ namespace Dogfight_Arena.Communication
                 UpdateTimer.Start();
             }//
 
-            
+
 
 
 
@@ -77,8 +77,8 @@ namespace Dogfight_Arena.Communication
         private void SendUpdatePkt(object sender, object e)
         {
 
-           
-            if(GameManager._ObjectsList[0]!=null && GameManager._ObjectsList[0] is Plane)
+
+            if (GameManager._ObjectsList[0] != null && GameManager._ObjectsList[0] is Plane)
             {
                 Plane localPlane = (Plane)GameManager._ObjectsList[0];
                 Packet UpdatePacket = new Packet(Packet.PacketType.Update);
@@ -89,7 +89,7 @@ namespace Dogfight_Arena.Communication
                 UpdatePacket.Data["angle"] = localPlane._angle;
                 SendData(UpdatePacket);
             }
-           
+
 
         }
 
@@ -101,7 +101,7 @@ namespace Dogfight_Arena.Communication
         }
         private void Listen()
         {
-            while(true)
+            while (true)
             {
                 try
                 {
@@ -122,7 +122,7 @@ namespace Dogfight_Arena.Communication
 
         }
 
-        private void ProccessPacket(Packet recievedPacket)
+        private async void ProccessPacket(Packet recievedPacket)
         {
             switch (recievedPacket.Type)
             {
@@ -164,7 +164,7 @@ namespace Dogfight_Arena.Communication
                         SendData(confirmHandshake2);
                     }
 
-                        
+
                     else
                         _initializationFailed = true;
                     break;
@@ -182,8 +182,8 @@ namespace Dogfight_Arena.Communication
                     keyNames[2] = "angle";
                     keyNames[3] = "side";
 
-                    
-                    foreach(string key in keyNames)
+
+                    foreach (string key in keyNames)
                     {
                         try
                         {
@@ -197,10 +197,23 @@ namespace Dogfight_Arena.Communication
                     }
                     //if we got to this stage without breaking it means the packet is valid
 
-                    Projectile proj = new Projectile(Convert.ToInt32(recievedPacket.Data["X"]), Convert.ToInt32(recievedPacket.Data["Y"]), "Images/Bullet.png", GameManager._field,5, Convert.ToDouble(recievedPacket.Data["angle"]), (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]));
-                    if (GameManager.GameEvents.OnShoot != null)
-                        GameManager.GameEvents.OnShoot(proj);
-                    
+                    await Windows.ApplicationModel.Core.CoreApplication
+                 .MainView.CoreWindow.Dispatcher
+                 .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                 {
+                     var proj = new Projectile(
+                         Convert.ToInt32(recievedPacket.Data["X"]),
+                         Convert.ToInt32(recievedPacket.Data["Y"]),
+                         "Images/Bullet.png",
+                         GameManager._field,
+                         5,
+                         Convert.ToDouble(recievedPacket.Data["angle"]),
+                         (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"])
+                     );
+
+                     GameManager.GameEvents.OnShoot?.Invoke(proj);
+                 });
+
                     break;
 
 

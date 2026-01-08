@@ -11,6 +11,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+
 namespace Dogfight_Arena.Services
 {
     public class GameManager
@@ -34,11 +36,12 @@ namespace Dogfight_Arena.Services
         //implement method to get other players ip
         private string targetIp = "192.168.2.6";
         private int targetPort = 42069;
+        public static int UIthread;
         
         public GameManager(Canvas field) 
         {
             
-
+            UIthread = Thread.CurrentThread.ManagedThreadId;
             _field = field;
             _runTimer = new DispatcherTimer();
             _runTimer.Interval = TimeSpan.FromMilliseconds(1);
