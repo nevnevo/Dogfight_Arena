@@ -85,7 +85,7 @@ namespace Dogfight_Arena.Communication
                 UpdatePacket.Data["X"] = localPlane._x;
                 UpdatePacket.Data["Y"] = localPlane._y;
                 UpdatePacket.Data["speed"] = localPlane._speed;
-                UpdatePacket.Data["acceleration"] = localPlane._acceleration;
+                UpdatePacket.Data["acceleration"] = 0;
                 UpdatePacket.Data["angle"] = localPlane._angle;
                 SendData(UpdatePacket);
             }
