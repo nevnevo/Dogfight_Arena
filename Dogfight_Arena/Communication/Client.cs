@@ -201,7 +201,7 @@ namespace Dogfight_Arena.Communication
                  .MainView.CoreWindow.Dispatcher
                  .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                  {
-                     var proj = new Projectile(
+                     var proj = new Bullet(
                          Convert.ToInt32(recievedPacket.Data["X"]),
                          Convert.ToInt32(recievedPacket.Data["Y"]),
                          "Images/Bullet.png",

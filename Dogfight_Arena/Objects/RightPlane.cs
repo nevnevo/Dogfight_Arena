@@ -29,6 +29,7 @@ namespace Dogfight_Arena.Objects
             if (key == Keys.ShootBulletRightPlayer && BulletsLeft > 0)
             {
                 BulletsLeft--;
+                base.Shoot(key);
                 ShootBullet();
 
             }
