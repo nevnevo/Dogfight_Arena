@@ -346,8 +346,11 @@ namespace Dogfight_Arena.Services
             Window.Current.CoreWindow.KeyDown-= CoreWindow_KeyDown;
             Window.Current.CoreWindow.KeyUp-= CoreWindow_KeyUp;
             GameEvents.OnDelete -= DeleteObject;
+            GameEvents.PacketRecieved -= PacketRecieved;
+            GameEvents.CreateMissile -= CreateMissile;
             LocalPlayer.UnsubscribeEvents();
             SecondPlayer.UnsubscribeEvents();
+
 
         }
 

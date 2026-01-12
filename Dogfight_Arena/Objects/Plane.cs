@@ -63,6 +63,7 @@ namespace Dogfight_Arena.Objects
         {
             GameManager.GameEvents.OnKeyPress -= Move;
             GameManager.GameEvents.OnKeyLeave -= Shoot;
+            
         }
         public virtual void SetNewData(Packet UpdatePkt)
         {
