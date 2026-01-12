@@ -203,8 +203,10 @@ namespace Dogfight_Arena.Communication
                         }
                     }
                     //if we got to this stage without breaking it means the packet is valid
-                    
-                    await Windows.ApplicationModel.Core.CoreApplication
+                    //Convert.ToString(recievedPacket.Data["image"])
+                    if (Convert.ToString(recievedPacket.Data["image"]) == "Images/Bullet.png")
+                    {
+                        await Windows.ApplicationModel.Core.CoreApplication
                  .MainView.CoreWindow.Dispatcher
                  .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                  {
@@ -220,6 +222,32 @@ namespace Dogfight_Arena.Communication
 
                      GameManager.GameEvents.OnShoot?.Invoke(proj);
                  });
+                        
+                    }
+                    else
+                    {
+                        int enemy=0;
+                        if (Convert.ToInt32(recievedPacket.Data["side"]) == 0)
+                            enemy = 1;
+                        await Windows.ApplicationModel.Core.CoreApplication
+             .MainView.CoreWindow.Dispatcher
+             .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+             {
+                 var projMissile = new Missile(
+                     Convert.ToInt32(recievedPacket.Data["X"]),
+                     Convert.ToInt32(recievedPacket.Data["Y"]),
+                     Convert.ToString(recievedPacket.Data["image"]),
+                     GameManager._field,
+                     5,
+                     Convert.ToDouble(recievedPacket.Data["angle"]),
+                     (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]),
+                     GameManager.LocalPlayer
+
+                 ) ;
+
+                 GameManager.GameEvents.CreateMissile?.Invoke((Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]));
+             });
+                    }
 
                     break;
 

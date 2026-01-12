@@ -24,7 +24,7 @@ namespace Dogfight_Arena.Services
         private DispatcherTimer _runTimer;
         private DispatcherTimer _spawnHealthCratesTimer;
         private HashSet<VirtualKey> ActiveKeys = new HashSet<VirtualKey>(); //Hashset is used to avoid duplicatekeys,because it can contain only unique values
-        private Plane LocalPlayer;
+        public static Plane LocalPlayer;
         private Plane SecondPlayer;
         public static Canvas _field;
         private int PlayerWidth = 100;
