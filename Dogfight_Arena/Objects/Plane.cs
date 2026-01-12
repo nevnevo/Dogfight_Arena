@@ -53,9 +53,9 @@ namespace Dogfight_Arena.Objects
                 pkt.Data["angle"] = _angle;
                 pkt.Data["side"] = PlaneType;
                 if(key == VirtualKey.B)
-                    pkt.Data["image"] = "images/Bullet.png";
+                    pkt.Data["image"] = "Images/Bullet.png";
                 if (key == VirtualKey.M)
-                    pkt.Data["image"] = "images/missile.png";
+                    pkt.Data["image"] = "Images/missile.png";
                 GameManager.client.SendData(pkt);
             }
         }
