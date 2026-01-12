@@ -37,6 +37,7 @@ namespace Dogfight_Arena.Services
         private string targetIp = "192.168.2.6";
         private int targetPort = 42069;
         public static int UIthread;
+        private int seed = 0;
         
         public GameManager(Canvas field) 
         {
@@ -186,9 +187,11 @@ namespace Dogfight_Arena.Services
             }
             else
             {
-                if (client._randomSeed == 0)
+                if (client._randomSeed == 0 && seed == 0)
                     return;
-                Random rnd = new Random((int)client._randomSeed);
+                if (seed == 0)
+                    seed = (int)client._randomSeed;
+                Random rnd = new Random((int)seed);
                 if (!_isLastHealthCrateOn)
                 {
                     
