@@ -124,10 +124,7 @@ namespace Dogfight_Arena.Communication
 
         }
 
-        public static void UnsubscribeEvents()
-        {
-            GameManager.GameEvents.PacketRecieved-=
-        }
+       
         private async void ProccessPacket(Packet recievedPacket)
         {
             switch (recievedPacket.Type)

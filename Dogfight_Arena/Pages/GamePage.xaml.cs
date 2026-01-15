@@ -104,6 +104,7 @@ namespace Dogfight_Arena.Pages
             Frame.Navigate(typeof(RefreshGame));
             _GameManager = null;
             GC.Collect();
+
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
