@@ -111,8 +111,7 @@ namespace Dogfight_Arena.Pages
             GameManager.GameEvents.TakeHit -= TakeHit;
             
             _GameManager.UnsubscribeAllEvents();
-            _GameManager = null;
-            GC.Collect();
+            
 
 
             base.OnNavigatedFrom(e);
