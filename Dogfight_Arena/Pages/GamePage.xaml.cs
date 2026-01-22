@@ -100,7 +100,9 @@ namespace Dogfight_Arena.Pages
 
         private void ResetGame()
         {
+            GameManager.GameEvents.TakeHit -= TakeHit;
 
+            _GameManager.UnsubscribeAllEvents();
             Frame.Navigate(typeof(RefreshGame));
             
 
@@ -108,9 +110,7 @@ namespace Dogfight_Arena.Pages
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            GameManager.GameEvents.TakeHit -= TakeHit;
             
-            _GameManager.UnsubscribeAllEvents();
             
 
 
