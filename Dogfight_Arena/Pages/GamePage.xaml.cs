@@ -90,6 +90,12 @@ namespace Dogfight_Arena.Pages
 
             if (result == ContentDialogResult.Primary)
             {
+
+                GameManager.GameEvents.TakeHit -= TakeHit;
+
+                _GameManager.UnsubscribeAllEvents();
+                _GameManager = null;
+                GC.Collect();
                 Frame.Navigate(typeof(MenuPage));
             }
             else // result == ContentDialogResult.Secondary or ContentDialogResult.None
@@ -100,9 +106,7 @@ namespace Dogfight_Arena.Pages
 
         private void ResetGame()
         {
-            GameManager.GameEvents.TakeHit -= TakeHit;
 
-            _GameManager.UnsubscribeAllEvents();
             Frame.Navigate(typeof(RefreshGame));
             
 
