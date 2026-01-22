@@ -350,6 +350,8 @@ namespace Dogfight_Arena.Services
             GameEvents.CreateMissile -= CreateMissile;
             LocalPlayer.UnsubscribeEvents();
             SecondPlayer.UnsubscribeEvents();
+            _spawnHealthCratesTimer.Stop();
+            _runTimer.Stop();
             client = null;
             GC.Collect();
 
