@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using static Dogfight_Arena.Objects.Plane;
 using Windows.UI.ViewManagement;
 using Windows.Foundation;
+using Dogfight_Arena.Communication;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -107,8 +108,35 @@ namespace Dogfight_Arena.Pages
         private void ResetGame()
         {
 
-            Frame.Navigate(typeof(RefreshGame));
-            
+            if (!GameManager.IsOnline)
+            { 
+                _GameManager.UnsubscribeAllEvents();
+                Frame.Navigate(typeof(RefreshGame));
+            }
+            else
+            {
+                var pkt = new Packet(Packet.PacketType.PlayAgain);
+                GameManager.client.SendData(pkt);
+                Client.playAgainRequested = true;
+                long currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                long endTime = currentTime + 15; 
+                while (currentTime < endTime && !Client.playAgainRequestedFromOther)
+                {
+                    currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                }
+                if (Client.playAgainRequestedFromOther)
+                {
+                    long startingTime = GameManager.client.StartTime;
+                    currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                    while (currentTime < startingTime)
+                    {
+                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                    }
+                    _GameManager.UnsubscribeAllEvents();
+                    _GameManager.OnlineReset(GameCanvas,GameManager.client);
+                }
+            }
+
 
         }
 

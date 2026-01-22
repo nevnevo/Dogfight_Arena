@@ -34,6 +34,8 @@ namespace Dogfight_Arena.Communication
         public long _randomSeed;
         public long StartTime = 0;
         private DispatcherTimer UpdateTimer;
+        public static bool playAgainRequested = false;
+        public static bool playAgainRequestedFromOther = false;
 
         public Client(int localPort)
         {
@@ -177,80 +179,102 @@ namespace Dogfight_Arena.Communication
                 case (Packet.PacketType.Update):
                     if (GameManager.GameEvents.PacketRecieved != null)
                     {
-                        Debug.WriteLine($"Speed recieved: ");
+                       
                         GameManager.GameEvents.PacketRecieved(recievedPacket);
                     }
-                        
+
                     break;
+                case (Packet.PacketType.PlayAgain):
+                {
+                    if (playAgainRequested)
+                    {
+                        var pkt = new Packet(Packet.PacketType.Time);
+                        pkt.Data["startingTime"] = (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000;
+                        SendData(pkt);
+                        
+                    }
+                    playAgainRequestedFromOther = true;
+
+                    break;
+                }
+                case (Packet.PacketType.Time):
+                {
+                        StartTime = (long)recievedPacket.Data["startingTime"];
+                        break;
+                }
                 case (Packet.PacketType.OnShoot):
-                    string[] keyNames = new string[5];
-                    keyNames[0] = "X";
-                    keyNames[1] = "Y";
-                    keyNames[2] = "angle";
-                    keyNames[3] = "side";
-                    keyNames[4] = "image";
+                                string[] keyNames = new string[5];
+                                keyNames[0] = "X";
+                                keyNames[1] = "Y";
+                                keyNames[2] = "angle";
+                                keyNames[3] = "side";
+                                keyNames[4] = "image";
 
 
-                    foreach (string key in keyNames)
-                    {
-                        try
-                        {
-                            if (recievedPacket.Data[key] == null)
-                                break;
-                        }
-                        catch (Exception e)
-                        {
-                            break;
-                        }
-                    }
-                    //if we got to this stage without breaking it means the packet is valid
-                    //Convert.ToString(recievedPacket.Data["image"])
-                    if (Convert.ToString(recievedPacket.Data["image"]) == "Images/Bullet.png")
-                    {
-                        await Windows.ApplicationModel.Core.CoreApplication
-                 .MainView.CoreWindow.Dispatcher
-                 .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                 {
-                     var proj = new Bullet(
-                         Convert.ToInt32(recievedPacket.Data["X"]),
-                         Convert.ToInt32(recievedPacket.Data["Y"]),
-                         Convert.ToString(recievedPacket.Data["image"]),
-                         GameManager._field,
-                         5,
-                         Convert.ToDouble(recievedPacket.Data["angle"]),
-                         (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"])
-                     );
+                                foreach (string key in keyNames)
+                                {
+                                    try
+                                    {
+                                        if (recievedPacket.Data[key] == null)
+                                            break;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        break;
+                                    }
+                                }
+                                //if we got to this stage without breaking it means the packet is valid
+                                //Convert.ToString(recievedPacket.Data["image"])
+                                if (Convert.ToString(recievedPacket.Data["image"]) == "Images/Bullet.png")
+                                {
+                                    await Windows.ApplicationModel.Core.CoreApplication
+                             .MainView.CoreWindow.Dispatcher
+                             .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                             {
+                                 var proj = new Bullet(
+                                     Convert.ToInt32(recievedPacket.Data["X"]),
+                                     Convert.ToInt32(recievedPacket.Data["Y"]),
+                                     Convert.ToString(recievedPacket.Data["image"]),
+                                     GameManager._field,
+                                     5,
+                                     Convert.ToDouble(recievedPacket.Data["angle"]),
+                                     (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"])
+                                 );
 
-                     GameManager.GameEvents.OnShoot?.Invoke(proj);
-                 });
-                        
-                    }
-                    else
-                    {
-                        int enemy=0;
-                        if (Convert.ToInt32(recievedPacket.Data["side"]) == 0)
-                            enemy = 1;
-                        await Windows.ApplicationModel.Core.CoreApplication
-             .MainView.CoreWindow.Dispatcher
-             .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-             {
-                 var projMissile = new Missile(
-                     Convert.ToInt32(recievedPacket.Data["X"]),
-                     Convert.ToInt32(recievedPacket.Data["Y"]),
-                     Convert.ToString(recievedPacket.Data["image"]),
-                     GameManager._field,
-                     5,
-                     Convert.ToDouble(recievedPacket.Data["angle"]),
-                     (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]),
-                     GameManager.LocalPlayer
+                                 GameManager.GameEvents.OnShoot?.Invoke(proj);
+                             });
 
-                 ) ;
+                                }
+                                else
+                                {
+                                    int enemy = 0;
+                                    if (Convert.ToInt32(recievedPacket.Data["side"]) == 0)
+                                        enemy = 1;
+                                    await Windows.ApplicationModel.Core.CoreApplication
+                         .MainView.CoreWindow.Dispatcher
+                         .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                         {
+                             var projMissile = new Missile(
+                                 Convert.ToInt32(recievedPacket.Data["X"]),
+                                 Convert.ToInt32(recievedPacket.Data["Y"]),
+                                 Convert.ToString(recievedPacket.Data["image"]),
+                                 GameManager._field,
+                                 5,
+                                 Convert.ToDouble(recievedPacket.Data["angle"]),
+                                 (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]),
+                                 GameManager.LocalPlayer
 
-                 GameManager.GameEvents.CreateMissile?.Invoke((Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]));
-             });
-                    }
+                             );
+
+                             GameManager.GameEvents.CreateMissile?.Invoke((Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]));
+                         });
+                                }
 
                     break;
+                
+
+            }
+
 
 
                     //case default:

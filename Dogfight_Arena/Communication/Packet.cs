@@ -17,7 +17,9 @@ namespace Dogfight_Arena.Communication
             confirmHandshake,
             Ready,
             Update,
-            OnShoot
+            OnShoot,
+            PlayAgain,
+            Time
         }
         public enum PlayerSide
         {

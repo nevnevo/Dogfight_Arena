@@ -317,7 +317,60 @@ namespace Dogfight_Arena.Services
             else
             {
                 client.InitializeConnection(IPAddress.Parse(targetIp), targetPort);
-                // (rest of your online logic unchanged)
+                client.InitializeConnection(IPAddress.Parse(targetIp), targetPort);
+                LocalPlayerType = client._Side;
+                if (client._Side == Plane.PlaneTypes.LeftPlane)
+                {
+                    LocalPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
+                    SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
+
+                }
+                else
+                {
+                    SecondPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
+                    LocalPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
+                }
+                _ObjectsList.Add(LocalPlayer);
+                _ObjectsList.Add(SecondPlayer);
+
+                _spawnHealthCratesTimer.Tick += _spawnCratesTimer_Tick;
+                if (client._Side == Plane.PlaneTypes.LeftPlane)
+                {
+                    Packet pkt = new Packet(Packet.PacketType.Ready);
+                    pkt.Data.Add("startingTime", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000);
+                    client.SendData(pkt);
+                    client.StartTime = (long)pkt.Data["startingTime"];
+                    if (client.StartTime != 0)
+                    {
+                        long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        while (curTime != client.StartTime)
+                        {
+                            curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        }
+                        _runTimer.Start();
+                        _spawnHealthCratesTimer.Start();
+
+                    }
+                }
+                else
+                {
+                    while (client.StartTime == 0)
+                    {
+                        continue;
+                    }
+                    if (client.StartTime != 0)
+                    {
+                        long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        while (curTime < client.StartTime)
+                        {
+                            curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        }
+                        _runTimer.Start();
+                        _spawnHealthCratesTimer.Start();
+
+                    }
+                }
+
             }
 
             Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
@@ -345,6 +398,35 @@ namespace Dogfight_Arena.Services
 
         }
 
+        internal void OnlineReset(Canvas gameCanvas,Client _client)
+        {
+            UnsubscribeAllEvents();
 
+            lock (_objectListLock)
+            {
+                foreach (var obj in _ObjectsList)
+                    obj.Remove(); // remove from canvas
+
+                _ObjectsList.Clear();
+            }
+
+            ActiveKeys.Clear();
+
+            // --- RESET FIELDS ---
+            _isLastHealthCrateOn = false;
+            _isLastMissileCrateOn = false;
+            seed = 0;
+
+            LocalPlayer = null;
+            SecondPlayer = null;
+            
+            GameEvents = new Events();
+
+            _runTimer = null;
+            _spawnHealthCratesTimer = null;
+            client = _client;
+            Initialize(gameCanvas);
+
+        }
     }
 }
