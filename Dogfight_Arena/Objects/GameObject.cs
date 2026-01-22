@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
+
 namespace Dogfight_Arena.Objects
 {
     public abstract class GameObject
@@ -51,6 +52,10 @@ namespace Dogfight_Arena.Objects
             
             return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Height - 15);
 
+        }
+        public virtual void Remove()
+        {
+            _field.Children.Remove(_objectImage);
         }
         public virtual async Task RenderAsync()
         {

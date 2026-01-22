@@ -44,6 +44,8 @@ namespace Dogfight_Arena.Pages
         {
             
             _GameManager = new GameManager(GameCanvas);
+            _GameManager.UnsubscribeAllEvents();
+            _GameManager.Reset(GameCanvas);
             
             
             GameManager.GameEvents.TakeHit += TakeHit;
@@ -93,14 +95,12 @@ namespace Dogfight_Arena.Pages
 
                 GameManager.GameEvents.TakeHit -= TakeHit;
 
-                _GameManager.UnsubscribeAllEvents();
-                _GameManager = null;
-                GC.Collect();
+                
                 Frame.Navigate(typeof(MenuPage));
             }
-            else // result == ContentDialogResult.Secondary or ContentDialogResult.None
+            else // result == ContentDialogResult.Secondary
             {
-                ResetGame();
+                ResetGame();//need to rewrite that for the online funcitonality
             }
         }
 
@@ -117,9 +117,10 @@ namespace Dogfight_Arena.Pages
             
             
 
-
+            _GameManager.UnsubscribeAllEvents();
             base.OnNavigatedFrom(e);
         }
+        
         private void TakeHit(Plane.PlaneTypes PlaneType)
         {
             
