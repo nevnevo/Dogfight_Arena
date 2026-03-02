@@ -46,12 +46,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Login Button Top-Left -->
-        <Viewbox Stretch="Uniform" Grid.Row="0" Grid.Column="0" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Button Name="LoginButton" Content="Login"
-                    FontWeight="Bold" Foreground="Black" Background="MediumSeaGreen"
-                    Width="120" Height="50" FontSize="16"
-                    Click="LoginButton_Click"/>
-        </Viewbox>
+        
 
         <!-- Game Title Centered -->
         <Viewbox Stretch="Uniform" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="9">
@@ -151,7 +146,7 @@
             </Grid.Background>
         </Grid>
 
-        <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Grid.RowSpan="6" x:Name="EnterIpGrid">
+        <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Grid.RowSpan="6" x:Name="EnterIpGrid" Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
