@@ -150,7 +150,42 @@
                 <SolidColorBrush Color="Brown" />
             </Grid.Background>
         </Grid>
-        
 
+        <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Grid.RowSpan="6" x:Name="EnterIpGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.Background>
+                <SolidColorBrush Color="CadetBlue" />
+            </Grid.Background>
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="White">
+                Hello,please enter your opponents ip address 
+                
+            </TextBlock>
+            <TextBlock  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="8" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" FontWeight="Bold" Foreground="White">
+                IP Address:
+            </TextBlock>    
+            <TextBox Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="Black" Background="White" Name="UsernameTextBox" Width="400" Height="50" />
+
+            <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24" FontWeight="Bold" Foreground="White" Background="Green" Content="Submit" Width="200" Height="60" Click="SubmitUsernameButton_Click"/>
+        </Grid>
     </Grid>
 </Page>

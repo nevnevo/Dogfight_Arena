@@ -13,6 +13,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Net.Sockets;
+using System.Security;
+using System.Text.RegularExpressions;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -20,7 +23,8 @@ namespace Dogfight_Arena
 {
     public partial class MenuPage : Page
     {
-        private bool isLoggedIn = false;
+        private bool isLoggedIn = true;
+
         public MenuPage()
         {
             InitializeComponent();
@@ -29,10 +33,9 @@ namespace Dogfight_Arena
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             
-            if (isLoggedIn)
-            {
+            
                 ConnectionTypeGrid.Visibility = Visibility.Visible;
-            }
+                
             
         }
 
@@ -51,11 +54,7 @@ namespace Dogfight_Arena
             
         }
 
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
-        {
-            //implement login functionality here
-            isLoggedIn = !isLoggedIn;
-        }
+        
 
         private void OfflineButton_Click(object sender, RoutedEventArgs e)
         {
@@ -65,8 +64,25 @@ namespace Dogfight_Arena
 
         private void OnlineButton_Click(object sender, RoutedEventArgs e)
         {
-            GameManager.IsOnline = true;
-            Frame.Navigate(typeof(Pages.GamePage));
+            EnterIpGrid.Visibility = Visibility.Visible;
+
+           
+        }
+
+        private void SubmitUsernameButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            string pattern = @"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b";
+
+           if (!string.IsNullOrEmpty(UsernameTextBox.Text) && Regex.IsMatch(UsernameTextBox.Text,pattern))
+            {
+                GameManager.targetIp = UsernameTextBox.Text;
+                UsernameTextBox.IsEnabled = false;
+                EnterIpGrid.Visibility=Visibility.Collapsed;
+                GameManager.IsOnline = true;
+                Frame.Navigate(typeof(Pages.GamePage));
+            }
+
         }
     }
 }
