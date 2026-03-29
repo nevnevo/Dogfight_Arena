@@ -291,7 +291,7 @@ namespace Dogfight_Arena.Communication
 
 
                         Plane.PlaneTypes enemy = Plane.PlaneTypes.RightPlane;
-                        if(GameManager.LocalPlayerType==Plane.PlaneTypes.RightPlane)
+                        if(GameManager.SecondPlayer.PlaneType == Plane.PlaneTypes.LeftPlane)
                             enemy = Plane.PlaneTypes.LeftPlane;
                         GameManager.GameEvents.CreateMissile?.Invoke(enemy);
                                 
