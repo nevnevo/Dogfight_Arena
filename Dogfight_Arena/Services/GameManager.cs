@@ -319,7 +319,7 @@ namespace Dogfight_Arena.Services
             }
             else
             {
-                client.InitializeConnection(IPAddress.Parse(targetIp), targetPort);
+                
                 client.InitializeConnection(IPAddress.Parse(targetIp), targetPort);
                 LocalPlayerType = client._Side;
                 if (client._Side == Plane.PlaneTypes.LeftPlane)

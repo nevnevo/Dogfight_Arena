@@ -47,7 +47,7 @@ namespace Dogfight_Arena.Communication
         }
         public void InitializeConnection(IPAddress targetIp, int targetPort)
         {
-
+            Debug.WriteLine($"Initializing connection to {targetIp}:{targetPort} from local port {_localPort}");
             _udpClient = new UdpClient(_localPort);
             _endPoint = new IPEndPoint(targetIp, targetPort);
             _udpClient.Client.ReceiveTimeout = 30000; // 10 seconds
