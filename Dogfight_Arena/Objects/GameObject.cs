@@ -31,16 +31,15 @@ namespace Dogfight_Arena.Objects
             _y = y;
             _field = field;
 
-            // Schedule construction of _objectImage on the UI thread
+            // Create a dummy Image so _objectImage is not null
+            _objectImage = new Image { Width = size };
+
+            // Now schedule UI-specific initialization
             _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
                 Windows.UI.Core.CoreDispatcherPriority.Normal,
                 () =>
                 {
-                    _objectImage = new Image
-                    {
-                        Width = size,
-                        Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"))
-                    };
+                    _objectImage.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"));
                     _field.Children.Add(_objectImage);
                     Canvas.SetLeft(_objectImage, _x);
                     Canvas.SetTop(_objectImage, _y);
