@@ -34,7 +34,7 @@ namespace Dogfight_Arena.Services
         public static Client client = new Client(42069);
         public static Plane.PlaneTypes LocalPlayerType;
         //implement method to get other players ip
-        public static string targetIp = "10.0.0.17";
+        public static string targetIp = "";
         private int targetPort = 42069;
         public static int UIthread;
         private int seed = 0;
