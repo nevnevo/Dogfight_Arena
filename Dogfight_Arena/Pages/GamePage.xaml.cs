@@ -45,8 +45,7 @@ namespace Dogfight_Arena.Pages
         {
             
             _GameManager = new GameManager(GameCanvas);
-            _GameManager.UnsubscribeAllEvents();
-            _GameManager.Reset(GameCanvas);
+            
             
             
             GameManager.GameEvents.TakeHit += TakeHit;
