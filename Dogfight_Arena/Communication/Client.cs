@@ -30,6 +30,10 @@ namespace Dogfight_Arena.Communication
         private int _localPort;
         private bool isInitialized = false;
         private bool _initializationFailed = false;
+
+        private bool _isRunning = false;
+        private Thread _listenThread;
+
         public Plane.PlaneTypes _Side;
         public long _randomSeed;
         public long StartTime = 0;
@@ -40,27 +44,29 @@ namespace Dogfight_Arena.Communication
         public Client(int localPort)
         {
             _localPort = localPort;
-
-
-
-
         }
+
         public void InitializeConnection(IPAddress targetIp, int targetPort)
         {
             Debug.WriteLine($"Initializing connection to {targetIp}:{targetPort} from local port {_localPort}");
+
             _udpClient = new UdpClient(_localPort);
             _endPoint = new IPEndPoint(targetIp, targetPort);
-            _udpClient.Client.ReceiveTimeout = 30000; // 10 seconds
+            _udpClient.Client.ReceiveTimeout = 30000;
+
+            _isRunning = true;
+            _listenThread = new Thread(Listen);
+            _listenThread.Start();
 
             Packet initPacket = new Packet(Packet.PacketType.initGame);
             initPacket.Data.Add("proposedSide", Plane.PlaneTypes.LeftPlane);
-
             initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");//******** implement here player's name******** 
-            new Thread(Listen).Start();
+            initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");
+
             SendData(initPacket);
-            while (!isInitialized && !_initializationFailed)//waiting for the initialization to be complete
-                continue;
+
+            while (!isInitialized && !_initializationFailed)
+                Thread.Sleep(10);
 
             if (!_initializationFailed)
             {
@@ -68,44 +74,47 @@ namespace Dogfight_Arena.Communication
                 UpdateTimer.Interval = TimeSpan.FromMilliseconds(5);
                 UpdateTimer.Tick += SendUpdatePkt;
                 UpdateTimer.Start();
-            }//
-
-
-
-
-
-
+            }
         }
 
         private void SendUpdatePkt(object sender, object e)
         {
-
-
             if (GameManager._ObjectsList[0] != null && GameManager._ObjectsList[0] is Plane)
             {
                 Plane localPlane = (Plane)GameManager._ObjectsList[0];
+
                 Packet UpdatePacket = new Packet(Packet.PacketType.Update);
                 UpdatePacket.Data["X"] = localPlane._x;
                 UpdatePacket.Data["Y"] = localPlane._y;
                 UpdatePacket.Data["speed"] = localPlane._speed;
                 UpdatePacket.Data["acceleration"] = localPlane._acceleration;
                 UpdatePacket.Data["angle"] = localPlane._angle;
+
                 Debug.WriteLine($"Speed sent: {localPlane._speed}");
+
                 SendData(UpdatePacket);
             }
-
-
         }
 
         public void SendData(Packet packet)
         {
+            if (_udpClient == null) return;
+
             string jsonData = JsonConvert.SerializeObject(packet);
             byte[] data = Encoding.UTF8.GetBytes(jsonData);
-            _udpClient.Send(data, data.Length, _endPoint);
+
+            try
+            {
+                _udpClient.Send(data, data.Length, _endPoint);
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
+
         private void Listen()
         {
-            while (true)
+            while (_isRunning)
             {
                 try
                 {
@@ -114,187 +123,184 @@ namespace Dogfight_Arena.Communication
 
                     Task.Run(() =>
                     {
-                        Packet recievedPacket = JsonConvert.DeserializeObject<Packet>(recievedData);
+                        Packet recievedPacket =
+                            JsonConvert.DeserializeObject<Packet>(recievedData);
+
                         ProccessPacket(recievedPacket);
                     });
                 }
                 catch (SocketException)
                 {
-                    // Timeout or network error
+                }
+                catch (ObjectDisposedException)
+                {
+                    break;
                 }
             }
-
         }
 
-       
         private async void ProccessPacket(Packet recievedPacket)
         {
             switch (recievedPacket.Type)
             {
                 case (Packet.PacketType.initGame):
+
                     int a = Convert.ToInt32(recievedPacket.Data["proposedSide"]);
+
                     if ((Plane.PlaneTypes)a != Plane.PlaneTypes.RightPlane)
                         _Side = Plane.PlaneTypes.RightPlane;
                     else
                         _initializationFailed = true;
+
                     _randomSeed = (long)recievedPacket.Data["randomSeed"];
-                    //implement popup for player about the opponents name
-                    Packet HandshakeAck = new Packet(Packet.PacketType.initiated);
+
+                    Packet HandshakeAck =
+                        new Packet(Packet.PacketType.initiated);
+
                     HandshakeAck.Data.Add("acceptedSide", _Side);
                     HandshakeAck.Data.Add("randomSeed", _randomSeed);
+
                     SendData(HandshakeAck);
+
                     break;
+
                 case (Packet.PacketType.initiated):
+
                     if (Convert.ToInt32(recievedPacket.Data["acceptedSide"]) != ((int)_Side))
                     {
                         _randomSeed = (long)recievedPacket.Data["randomSeed"];
-                        Packet confirmHandshake = new Packet(Packet.PacketType.confirmHandshake);
+
+                        Packet confirmHandshake =
+                            new Packet(Packet.PacketType.confirmHandshake);
+
                         confirmHandshake.Data.Add("setSide", _Side);
                         confirmHandshake.Data.Add("randomSeed", _randomSeed);
 
                         SendData(confirmHandshake);
-
                     }
                     else
                         _initializationFailed = true;
+
                     break;
+
                 case (Packet.PacketType.confirmHandshake):
-                    if ((Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["setSide"]) != _Side && (long)recievedPacket.Data["randomSeed"] == _randomSeed)
+
+                    if ((Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["setSide"]) != _Side &&
+                        (long)recievedPacket.Data["randomSeed"] == _randomSeed)
                     {
                         isInitialized = true;
-                        Packet confirmHandshake2 = new Packet(Packet.PacketType.confirmHandshake);
+
+                        Packet confirmHandshake2 =
+                            new Packet(Packet.PacketType.confirmHandshake);
+
                         confirmHandshake2.Data.Add("setSide", _Side);
                         confirmHandshake2.Data.Add("randomSeed", _randomSeed);
 
                         SendData(confirmHandshake2);
                     }
-
-
                     else
                         _initializationFailed = true;
-                    break;
-                case (Packet.PacketType.Ready):
-                    StartTime = (long)recievedPacket.Data["startingTime"];
-                    break;
-                case (Packet.PacketType.Update):
-                    if (GameManager.GameEvents.PacketRecieved != null)
-                    {
-                       
-                        GameManager.GameEvents.PacketRecieved(recievedPacket);
-                    }
 
                     break;
+
+                case (Packet.PacketType.Ready):
+
+                    StartTime = (long)recievedPacket.Data["startingTime"];
+                    break;
+
+                case (Packet.PacketType.Update):
+
+                    GameManager.GameEvents.PacketRecieved?.Invoke(recievedPacket);
+                    break;
+
                 case (Packet.PacketType.PlayAgain):
-                {
+
                     if (playAgainRequested)
                     {
                         var pkt = new Packet(Packet.PacketType.Time);
-                        pkt.Data["startingTime"] = (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000;
+
+                        pkt.Data["startingTime"] =
+                            (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000;
+
                         SendData(pkt);
-                        
                     }
+
                     playAgainRequestedFromOther = true;
-
                     break;
-                }
+
                 case (Packet.PacketType.Time):
-                {
-                        StartTime = (long)recievedPacket.Data["startingTime"];
-                        break;
-                }
+
+                    StartTime = (long)recievedPacket.Data["startingTime"];
+                    break;
+
                 case (Packet.PacketType.OnShoot):
-                                string[] keyNames = new string[5];
-                                keyNames[0] = "X";
-                                keyNames[1] = "Y";
-                                keyNames[2] = "angle";
-                                keyNames[3] = "side";
-                                keyNames[4] = "image";
 
+                    string[] keyNames =
+                    {
+                        "X",
+                        "Y",
+                        "angle",
+                        "side",
+                        "image"
+                    };
 
-                                foreach (string key in keyNames)
+                    foreach (string key in keyNames)
+                    {
+                        try
+                        {
+                            if (recievedPacket.Data[key] == null)
+                                return;
+                        }
+                        catch
+                        {
+                            return;
+                        }
+                    }
+
+                    if (Convert.ToString(recievedPacket.Data["image"]) == "Images/Bullet.png")
+                    {
+                        await Windows.ApplicationModel.Core.CoreApplication
+                            .MainView.CoreWindow.Dispatcher
+                            .RunAsync(
+                                Windows.UI.Core.CoreDispatcherPriority.Normal,
+                                () =>
                                 {
-                                    try
-                                    {
-                                        if (recievedPacket.Data[key] == null)
-                                            break;
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        break;
-                                    }
-                                }
-                                //if we got to this stage without breaking it means the packet is valid
-                                //Convert.ToString(recievedPacket.Data["image"])
-                                if (Convert.ToString(recievedPacket.Data["image"]) == "Images/Bullet.png")
-                                {
-                                    await Windows.ApplicationModel.Core.CoreApplication
-                             .MainView.CoreWindow.Dispatcher
-                             .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                             {
-                                 var proj = new Bullet(
-                                     Convert.ToInt32(recievedPacket.Data["X"]),
-                                     Convert.ToInt32(recievedPacket.Data["Y"]),
-                                     Convert.ToString(recievedPacket.Data["image"]),
-                                     GameManager._field,
-                                     5,
-                                     Convert.ToDouble(recievedPacket.Data["angle"]),
-                                     (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"])
-                                 );
+                                    var proj =
+                                        new Bullet(
+                                            Convert.ToInt32(recievedPacket.Data["X"]),
+                                            Convert.ToInt32(recievedPacket.Data["Y"]),
+                                            Convert.ToString(recievedPacket.Data["image"]),
+                                            GameManager._field,
+                                            5,
+                                            Convert.ToDouble(recievedPacket.Data["angle"]),
+                                            (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"])
+                                        );
 
-                                 GameManager.GameEvents.OnShoot?.Invoke(proj);
-                             });
-
-                                }
-                                else
-                                {
-                                    int enemy = 0;
-                                    if (Convert.ToInt32(recievedPacket.Data["side"]) == 0)
-                                        enemy = 1;
-                                    await Windows.ApplicationModel.Core.CoreApplication
-                         .MainView.CoreWindow.Dispatcher
-                         .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                         {
-                             var projMissile = new Missile(
-                                 Convert.ToInt32(recievedPacket.Data["X"]),
-                                 Convert.ToInt32(recievedPacket.Data["Y"]),
-                                 Convert.ToString(recievedPacket.Data["image"]),
-                                 GameManager._field,
-                                 5,
-                                 Convert.ToDouble(recievedPacket.Data["angle"]),
-                                 (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]),
-                                 GameManager.LocalPlayer
-
-                             );
-
-                             GameManager.GameEvents.CreateMissile?.Invoke((Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]));
-                         });
-                                }
+                                    GameManager.GameEvents.OnShoot?.Invoke(proj);
+                                });
+                    }
 
                     break;
-                
-
             }
-
-
-
-                    //case default:
-                    //    if (GameManager.GameEvents.PacketRecieved != null)
-                    //    {
-                    //        GameManager.GameEvents.PacketRecieved(recievedPacket);
-                    //    }
-                    //    break;
-
-
-            }
+        }
 
         public void Delete()
         {
-            _udpClient.Close();
+            _isRunning = false;
 
+            try
+            {
+                _udpClient?.Close();
+            }
+            catch { }
 
+            try
+            {
+                _listenThread?.Join();
+            }
+            catch { }
+
+            UpdateTimer?.Stop();
         }
     }
-    }
-
-
-
+}
