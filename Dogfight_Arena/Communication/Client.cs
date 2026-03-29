@@ -71,7 +71,7 @@ namespace Dogfight_Arena.Communication
             if (!_initializationFailed)
             {
                 UpdateTimer = new DispatcherTimer();
-                UpdateTimer.Interval = TimeSpan.FromMilliseconds(5);
+                UpdateTimer.Interval = TimeSpan.FromMilliseconds(16); // 60fps instead of 200fps
                 UpdateTimer.Tick += SendUpdatePkt;
                 UpdateTimer.Start();
             }
@@ -79,6 +79,9 @@ namespace Dogfight_Arena.Communication
 
         private void SendUpdatePkt(object sender, object e)
         {
+            if (!_isRunning)
+                return;
+
             if (GameManager._ObjectsList[0] != null && GameManager._ObjectsList[0] is Plane)
             {
                 Plane localPlane = (Plane)GameManager._ObjectsList[0];
@@ -98,7 +101,8 @@ namespace Dogfight_Arena.Communication
 
         public void SendData(Packet packet)
         {
-            if (_udpClient == null) return;
+            if (!_isRunning || _udpClient == null)
+                return;
 
             string jsonData = JsonConvert.SerializeObject(packet);
             byte[] data = Encoding.UTF8.GetBytes(jsonData);
@@ -108,6 +112,9 @@ namespace Dogfight_Arena.Communication
                 _udpClient.Send(data, data.Length, _endPoint);
             }
             catch (ObjectDisposedException)
+            {
+            }
+            catch (SocketException)
             {
             }
         }
@@ -290,6 +297,12 @@ namespace Dogfight_Arena.Communication
 
             try
             {
+                UpdateTimer?.Stop();
+            }
+            catch { }
+
+            try
+            {
                 _udpClient?.Close();
             }
             catch { }
@@ -299,8 +312,6 @@ namespace Dogfight_Arena.Communication
                 _listenThread?.Join();
             }
             catch { }
-
-            UpdateTimer?.Stop();
         }
     }
 }
