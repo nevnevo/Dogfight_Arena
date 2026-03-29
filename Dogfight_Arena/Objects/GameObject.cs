@@ -3,43 +3,51 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI;
+
 using Windows.UI.Xaml;
-using System;
-using System.Threading.Tasks;
 
-public class GameObject
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+
+
+namespace Dogfight_Arena.Objects
 {
-    public double _x;
-    public double _y;
-    public Image _objectImage;
-    private Canvas _field;
-
-    public GameObject(double x, double y, string fileName, Canvas field, double size)
+    public abstract class GameObject
     {
-        _x = x;
-        _y = y;
-        _field = field;
+        public double _x;
+        public double _y;
+        protected Image _objectImage;
+        protected Canvas _field;
+        
+        public bool Colisional { get; set; } = true;
+        public GameObject(double x, double y, string fileName, Canvas field, double size)
+        {
+            _x = x;
+            _y = y;
+            _field = field;
 
-        // Schedule construction of _objectImage on the UI thread
-        _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
-            Windows.UI.Core.CoreDispatcherPriority.Normal,
-            () =>
-            {
-                _objectImage = new Image
+            // Schedule construction of _objectImage on the UI thread
+            _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                Windows.UI.Core.CoreDispatcherPriority.Normal,
+                () =>
                 {
-                    Width = size,
-                    Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"))
-                };
-                _field.Children.Add(_objectImage);
-                Canvas.SetLeft(_objectImage, _x);
-                Canvas.SetTop(_objectImage, _y);
-            });
-    }
+                    _objectImage = new Image
+                    {
+                        Width = size,
+                        Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"))
+                    };
+                    _field.Children.Add(_objectImage);
+                    Canvas.SetLeft(_objectImage, _x);
+                    Canvas.SetTop(_objectImage, _y);
+                });
+        }
 
-
-private void SetImage(string fileName)
+        private void SetImage(string fileName)
         {
             _objectImage.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"));
         }
