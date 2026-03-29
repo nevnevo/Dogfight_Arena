@@ -29,21 +29,12 @@ namespace Dogfight_Arena.Objects
         {
             _x = x;
             _y = y;
+            _objectImage = new Image();
+            _objectImage.Width = size; 
             _field = field;
-
-            // Create a dummy Image so _objectImage is not null
-            _objectImage = new Image { Width = size };
-
-            // Now schedule UI-specific initialization
-            _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
-                Windows.UI.Core.CoreDispatcherPriority.Normal,
-                () =>
-                {
-                    _objectImage.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"));
-                    _field.Children.Add(_objectImage);
-                    Canvas.SetLeft(_objectImage, _x);
-                    Canvas.SetTop(_objectImage, _y);
-                });
+            SetImage(fileName);
+            _field.Children.Add(_objectImage);
+            Render();
         }
 
         private void SetImage(string fileName)

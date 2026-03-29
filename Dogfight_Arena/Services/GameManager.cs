@@ -59,29 +59,45 @@ namespace Dogfight_Arena.Services
         {
             Plane enemyPlane = null;
             Plane thisPlane = null;
-            foreach(GameObject obj in _ObjectsList)
+
+            foreach (GameObject obj in _ObjectsList)
             {
                 if (obj is Plane plane)
                 {
-
-                
                     if (plane.PlaneType == ShootingPlayer)
                         thisPlane = plane;
                     else
                         enemyPlane = plane;
                 }
-
             }
 
-            Missile missile = new Missile(thisPlane._x,thisPlane._y,"Images/missile.png",_field,50,thisPlane._angle,ShootingPlayer,enemyPlane);
-            lock (_objectListLock)
-            {
-                _ObjectsList.Add(missile);
-            }
+            // Call the UI-thread task, fire-and-forget
+            _ = CreateMissileOnUIThread(thisPlane, enemyPlane, ShootingPlayer);
+        }
+        private async Task CreateMissileOnUIThread(Plane thisPlane, Plane enemyPlane, Plane.PlaneTypes ShootingPlayer)
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(
+                Windows.UI.Core.CoreDispatcherPriority.Normal,
+                () =>
+                {
+                    Missile missile = new Missile(
+                        thisPlane._x,
+                        thisPlane._y,
+                        "Images/missile.png",
+                        _field,
+                        50,
+                        thisPlane._angle,
+                        ShootingPlayer,
+                        enemyPlane
+                    );
 
+                    lock (_objectListLock)
+                    {
+                        _ObjectsList.Add(missile);
+                    }
+                });
         }
 
-       
 
         private void _spawnCratesTimer_Tick(object sender, object e)
         {
