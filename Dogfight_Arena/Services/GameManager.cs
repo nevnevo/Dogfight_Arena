@@ -279,7 +279,7 @@ namespace Dogfight_Arena.Services
 
             LocalPlayer = null;
             SecondPlayer = null;
-            client.Delete()
+            client.Delete();
             client = new Client(42069);
             GameEvents = new Events();
 
