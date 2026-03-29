@@ -289,27 +289,10 @@ namespace Dogfight_Arena.Communication
                     else if (Convert.ToString(recievedPacket.Data["image"]) == "Images/missile.png")
                     {
 
-                        
-                        await Windows.ApplicationModel.Core.CoreApplication
-                            .MainView.CoreWindow.Dispatcher
-                            .RunAsync(
-                                Windows.UI.Core.CoreDispatcherPriority.Normal,
-                                () =>
-                                {
-                                    var proj =
-                                        new Missile (
-                                            Convert.ToInt32(recievedPacket.Data["X"]),
-                                            Convert.ToInt32(recievedPacket.Data["Y"]),
-                                            Convert.ToString(recievedPacket.Data["image"]),
-                                            GameManager._field,
-                                            5,
-                                            Convert.ToDouble(recievedPacket.Data["angle"]),
-                                            (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"]),
-                                            GameManager.SecondPlayer    
-                                        );
 
-                                    GameManager.GameEvents.OnShoot?.Invoke(proj);
-                                });
+                        
+                        GameManager.GameEvents.CreateMissile?.Invoke(GameManager.LocalPlayerType);
+                              
                     }
 
 
