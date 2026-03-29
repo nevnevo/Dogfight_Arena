@@ -35,6 +35,8 @@ namespace Dogfight_Arena.Communication
         private Thread _listenThread;
 
         public Plane.PlaneTypes _Side;
+        private Plane.PlaneTypes _proposedSide;
+
         public long _randomSeed;
         public long StartTime = 0;
         private DispatcherTimer UpdateTimer;
@@ -58,8 +60,10 @@ namespace Dogfight_Arena.Communication
             _listenThread = new Thread(Listen);
             _listenThread.Start();
 
+            _proposedSide = Plane.PlaneTypes.LeftPlane;
+
             Packet initPacket = new Packet(Packet.PacketType.initGame);
-            initPacket.Data.Add("proposedSide", Plane.PlaneTypes.LeftPlane);
+            initPacket.Data.Add("proposedSide", _proposedSide);
             initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");
 
@@ -71,7 +75,7 @@ namespace Dogfight_Arena.Communication
             if (!_initializationFailed)
             {
                 UpdateTimer = new DispatcherTimer();
-                UpdateTimer.Interval = TimeSpan.FromMilliseconds(16); // 60fps instead of 200fps
+                UpdateTimer.Interval = TimeSpan.FromMilliseconds(16);
                 UpdateTimer.Tick += SendUpdatePkt;
                 UpdateTimer.Start();
             }
@@ -93,8 +97,6 @@ namespace Dogfight_Arena.Communication
                 UpdatePacket.Data["acceleration"] = localPlane._acceleration;
                 UpdatePacket.Data["angle"] = localPlane._angle;
 
-                Debug.WriteLine($"Speed sent: {localPlane._speed}");
-
                 SendData(UpdatePacket);
             }
         }
@@ -111,10 +113,7 @@ namespace Dogfight_Arena.Communication
             {
                 _udpClient.Send(data, data.Length, _endPoint);
             }
-            catch (ObjectDisposedException)
-            {
-            }
-            catch (SocketException)
+            catch
             {
             }
         }
@@ -125,7 +124,9 @@ namespace Dogfight_Arena.Communication
             {
                 try
                 {
-                    byte[] data = _udpClient.Receive(ref _endPoint);
+                    IPEndPoint remote = null;
+                    byte[] data = _udpClient.Receive(ref remote);
+
                     string recievedData = Encoding.UTF8.GetString(data);
 
                     Task.Run(() =>
@@ -152,12 +153,12 @@ namespace Dogfight_Arena.Communication
             {
                 case (Packet.PacketType.initGame):
 
-                    int a = Convert.ToInt32(recievedPacket.Data["proposedSide"]);
+                    Plane.PlaneTypes remoteSide =
+                        (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["proposedSide"]);
 
-                    if ((Plane.PlaneTypes)a != Plane.PlaneTypes.RightPlane)
-                        _Side = Plane.PlaneTypes.RightPlane;
-                    else
-                        _initializationFailed = true;
+                    _Side = remoteSide == Plane.PlaneTypes.LeftPlane
+                        ? Plane.PlaneTypes.RightPlane
+                        : Plane.PlaneTypes.LeftPlane;
 
                     _randomSeed = (long)recievedPacket.Data["randomSeed"];
 
@@ -238,55 +239,6 @@ namespace Dogfight_Arena.Communication
                 case (Packet.PacketType.Time):
 
                     StartTime = (long)recievedPacket.Data["startingTime"];
-                    break;
-
-                case (Packet.PacketType.OnShoot):
-
-                    string[] keyNames =
-                    {
-                        "X",
-                        "Y",
-                        "angle",
-                        "side",
-                        "image"
-                    };
-
-                    foreach (string key in keyNames)
-                    {
-                        try
-                        {
-                            if (recievedPacket.Data[key] == null)
-                                return;
-                        }
-                        catch
-                        {
-                            return;
-                        }
-                    }
-
-                    if (Convert.ToString(recievedPacket.Data["image"]) == "Images/Bullet.png")
-                    {
-                        await Windows.ApplicationModel.Core.CoreApplication
-                            .MainView.CoreWindow.Dispatcher
-                            .RunAsync(
-                                Windows.UI.Core.CoreDispatcherPriority.Normal,
-                                () =>
-                                {
-                                    var proj =
-                                        new Bullet(
-                                            Convert.ToInt32(recievedPacket.Data["X"]),
-                                            Convert.ToInt32(recievedPacket.Data["Y"]),
-                                            Convert.ToString(recievedPacket.Data["image"]),
-                                            GameManager._field,
-                                            5,
-                                            Convert.ToDouble(recievedPacket.Data["angle"]),
-                                            (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"])
-                                        );
-
-                                    GameManager.GameEvents.OnShoot?.Invoke(proj);
-                                });
-                    }
-
                     break;
             }
         }
