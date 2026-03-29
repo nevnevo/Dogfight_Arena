@@ -286,7 +286,14 @@ namespace Dogfight_Arena.Communication
 
 
             }
+
+        public void Delete()
+        {
+            _udpClient.Close();
+
+
         }
+    }
     }
 
 

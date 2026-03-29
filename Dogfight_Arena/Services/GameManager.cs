@@ -270,6 +270,8 @@ namespace Dogfight_Arena.Services
 
             ActiveKeys.Clear();
 
+            
+
             // --- RESET FIELDS ---
             _isLastHealthCrateOn = false;
             _isLastMissileCrateOn = false;
@@ -277,6 +279,7 @@ namespace Dogfight_Arena.Services
 
             LocalPlayer = null;
             SecondPlayer = null;
+            client.Delete()
             client = new Client(42069);
             GameEvents = new Events();
 
@@ -393,7 +396,7 @@ namespace Dogfight_Arena.Services
             SecondPlayer.UnsubscribeEvents();
             _spawnHealthCratesTimer.Stop();
             _runTimer.Stop();
-            ;
+            
 
 
         }
