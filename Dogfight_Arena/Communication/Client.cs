@@ -28,18 +28,20 @@ namespace Dogfight_Arena.Communication
         private UdpClient _udpClient;
         private IPEndPoint _endPoint;
         private int _localPort;
-        private bool isInitialized = false;
-        private bool _initializationFailed = false;
 
+        private bool isInitialized = false;
         private bool _isRunning = false;
         private Thread _listenThread;
 
         public Plane.PlaneTypes _Side;
-        private Plane.PlaneTypes _proposedSide;
 
+        private long _mySeed;
         public long _randomSeed;
+
         public long StartTime = 0;
+
         private DispatcherTimer UpdateTimer;
+
         public static bool playAgainRequested = false;
         public static bool playAgainRequestedFromOther = false;
 
@@ -54,31 +56,26 @@ namespace Dogfight_Arena.Communication
 
             _udpClient = new UdpClient(_localPort);
             _endPoint = new IPEndPoint(targetIp, targetPort);
-            _udpClient.Client.ReceiveTimeout = 30000;
 
             _isRunning = true;
             _listenThread = new Thread(Listen);
             _listenThread.Start();
 
-            _proposedSide = Plane.PlaneTypes.LeftPlane;
+            _mySeed = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             Packet initPacket = new Packet(Packet.PacketType.initGame);
-            initPacket.Data.Add("proposedSide", _proposedSide);
-            initPacket.Data.Add("randomSeed", (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            initPacket.Data.Add("randomSeed", _mySeed);
             initPacket.Data.Add("playerName", "RightPlaneNowItsEmpty");
 
             SendData(initPacket);
 
-            while (!isInitialized && !_initializationFailed)
+            while (!isInitialized)
                 Thread.Sleep(10);
 
-            if (!_initializationFailed)
-            {
-                UpdateTimer = new DispatcherTimer();
-                UpdateTimer.Interval = TimeSpan.FromMilliseconds(16);
-                UpdateTimer.Tick += SendUpdatePkt;
-                UpdateTimer.Start();
-            }
+            UpdateTimer = new DispatcherTimer();
+            UpdateTimer.Interval = TimeSpan.FromMilliseconds(16);
+            UpdateTimer.Tick += SendUpdatePkt;
+            UpdateTimer.Start();
         }
 
         private void SendUpdatePkt(object sender, object e)
@@ -91,6 +88,7 @@ namespace Dogfight_Arena.Communication
                 Plane localPlane = (Plane)GameManager._ObjectsList[0];
 
                 Packet UpdatePacket = new Packet(Packet.PacketType.Update);
+
                 UpdatePacket.Data["X"] = localPlane._x;
                 UpdatePacket.Data["Y"] = localPlane._y;
                 UpdatePacket.Data["speed"] = localPlane._speed;
@@ -153,61 +151,16 @@ namespace Dogfight_Arena.Communication
             {
                 case (Packet.PacketType.initGame):
 
-                    Plane.PlaneTypes remoteSide =
-                        (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["proposedSide"]);
+                    long remoteSeed = (long)recievedPacket.Data["randomSeed"];
 
-                    _Side = remoteSide == Plane.PlaneTypes.LeftPlane
-                        ? Plane.PlaneTypes.RightPlane
-                        : Plane.PlaneTypes.LeftPlane;
+                    _randomSeed = Math.Min(_mySeed, remoteSeed);
 
-                    _randomSeed = (long)recievedPacket.Data["randomSeed"];
-
-                    Packet HandshakeAck =
-                        new Packet(Packet.PacketType.initiated);
-
-                    HandshakeAck.Data.Add("acceptedSide", _Side);
-                    HandshakeAck.Data.Add("randomSeed", _randomSeed);
-
-                    SendData(HandshakeAck);
-
-                    break;
-
-                case (Packet.PacketType.initiated):
-
-                    if (Convert.ToInt32(recievedPacket.Data["acceptedSide"]) != ((int)_Side))
-                    {
-                        _randomSeed = (long)recievedPacket.Data["randomSeed"];
-
-                        Packet confirmHandshake =
-                            new Packet(Packet.PacketType.confirmHandshake);
-
-                        confirmHandshake.Data.Add("setSide", _Side);
-                        confirmHandshake.Data.Add("randomSeed", _randomSeed);
-
-                        SendData(confirmHandshake);
-                    }
+                    if (_mySeed < remoteSeed)
+                        _Side = Plane.PlaneTypes.LeftPlane;
                     else
-                        _initializationFailed = true;
+                        _Side = Plane.PlaneTypes.RightPlane;
 
-                    break;
-
-                case (Packet.PacketType.confirmHandshake):
-
-                    if ((Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["setSide"]) != _Side &&
-                        (long)recievedPacket.Data["randomSeed"] == _randomSeed)
-                    {
-                        isInitialized = true;
-
-                        Packet confirmHandshake2 =
-                            new Packet(Packet.PacketType.confirmHandshake);
-
-                        confirmHandshake2.Data.Add("setSide", _Side);
-                        confirmHandshake2.Data.Add("randomSeed", _randomSeed);
-
-                        SendData(confirmHandshake2);
-                    }
-                    else
-                        _initializationFailed = true;
+                    isInitialized = true;
 
                     break;
 
@@ -219,6 +172,7 @@ namespace Dogfight_Arena.Communication
                 case (Packet.PacketType.Update):
 
                     GameManager.GameEvents.PacketRecieved?.Invoke(recievedPacket);
+
                     break;
 
                 case (Packet.PacketType.PlayAgain):
@@ -234,11 +188,62 @@ namespace Dogfight_Arena.Communication
                     }
 
                     playAgainRequestedFromOther = true;
+
                     break;
 
                 case (Packet.PacketType.Time):
 
                     StartTime = (long)recievedPacket.Data["startingTime"];
+
+                    break;
+
+                case (Packet.PacketType.OnShoot):
+
+                    string[] keyNames =
+                    {
+                        "X",
+                        "Y",
+                        "angle",
+                        "side",
+                        "image"
+                    };
+
+                    foreach (string key in keyNames)
+                    {
+                        try
+                        {
+                            if (recievedPacket.Data[key] == null)
+                                return;
+                        }
+                        catch
+                        {
+                            return;
+                        }
+                    }
+
+                    if (Convert.ToString(recievedPacket.Data["image"]) == "Images/Bullet.png")
+                    {
+                        await Windows.ApplicationModel.Core.CoreApplication
+                            .MainView.CoreWindow.Dispatcher
+                            .RunAsync(
+                                Windows.UI.Core.CoreDispatcherPriority.Normal,
+                                () =>
+                                {
+                                    var proj =
+                                        new Bullet(
+                                            Convert.ToInt32(recievedPacket.Data["X"]),
+                                            Convert.ToInt32(recievedPacket.Data["Y"]),
+                                            Convert.ToString(recievedPacket.Data["image"]),
+                                            GameManager._field,
+                                            5,
+                                            Convert.ToDouble(recievedPacket.Data["angle"]),
+                                            (Plane.PlaneTypes)Convert.ToInt32(recievedPacket.Data["side"])
+                                        );
+
+                                    GameManager.GameEvents.OnShoot?.Invoke(proj);
+                                });
+                    }
+
                     break;
             }
         }
