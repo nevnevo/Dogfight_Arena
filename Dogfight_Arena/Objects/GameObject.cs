@@ -1,14 +1,10 @@
 ﻿using Dogfight_Arena.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
 
 namespace Dogfight_Arena.Objects
 {
@@ -22,7 +18,7 @@ namespace Dogfight_Arena.Objects
         public bool Colisional { get; set; } = true;
 
         /// <summary>
-        /// Thread-safe constructor: all UI elements are created on the UI thread.
+        /// Thread-safe constructor: _objectImage is created immediately, UI-specific properties are dispatched
         /// </summary>
         public GameObject(double x, double y, string fileName, Canvas field, double size)
         {
@@ -30,25 +26,26 @@ namespace Dogfight_Arena.Objects
             _y = y;
             _field = field;
 
-            // Schedule full UI initialization on UI thread
-            _ = InitializeAsync(fileName, size);
+            // Create Image immediately so dependent code works
+            _objectImage = new Image
+            {
+                Width = size
+            };
+
+            // Initialize UI-specific properties on UI thread
+            _ = InitializeAsync(fileName);
         }
 
         /// <summary>
-        /// Initialize Image and add to Canvas safely on UI thread.
+        /// Thread-safe UI initialization
         /// </summary>
-        private async Task InitializeAsync(string fileName, double size)
+        private async Task InitializeAsync(string fileName)
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher
                 .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    // Create Image on UI thread
-                    _objectImage = new Image
-                    {
-                        Width = size,
-                        Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"))
-                    };
-
+                    // Safe to access _objectImage here
+                    _objectImage.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"));
                     _field.Children.Add(_objectImage);
                     Canvas.SetLeft(_objectImage, _x);
                     Canvas.SetTop(_objectImage, _y);
@@ -56,7 +53,7 @@ namespace Dogfight_Arena.Objects
         }
 
         /// <summary>
-        /// Get Rect with angle (can be overridden in subclasses)
+        /// Get bounding rectangle with angle
         /// </summary>
         public virtual Rect Rect(int angle)
         {
@@ -64,7 +61,7 @@ namespace Dogfight_Arena.Objects
         }
 
         /// <summary>
-        /// Get Rect without angle
+        /// Get default bounding rectangle
         /// </summary>
         public virtual Rect Rect()
         {
