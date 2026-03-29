@@ -21,49 +21,63 @@ namespace Dogfight_Arena.Objects
 
         public bool Colisional { get; set; } = true;
 
-        // Constructor
+        /// <summary>
+        /// Thread-safe constructor: all UI elements are created on the UI thread.
+        /// </summary>
         public GameObject(double x, double y, string fileName, Canvas field, double size)
         {
             _x = x;
             _y = y;
-            _objectImage = new Image
-            {
-                Width = size
-            };
             _field = field;
 
-            // Schedule UI initialization on main thread
-            _ = InitializeAsync(fileName);
+            // Schedule full UI initialization on UI thread
+            _ = InitializeAsync(fileName, size);
         }
 
-        // Thread-safe initialization
-        private async Task InitializeAsync(string fileName)
+        /// <summary>
+        /// Initialize Image and add to Canvas safely on UI thread.
+        /// </summary>
+        private async Task InitializeAsync(string fileName, double size)
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher
                 .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    _objectImage.Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"));
+                    // Create Image on UI thread
+                    _objectImage = new Image
+                    {
+                        Width = size,
+                        Source = new BitmapImage(new Uri($"ms-appx:///Assets/{fileName}"))
+                    };
+
                     _field.Children.Add(_objectImage);
                     Canvas.SetLeft(_objectImage, _x);
                     Canvas.SetTop(_objectImage, _y);
                 });
         }
 
-        // Rect with angle (can override)
+        /// <summary>
+        /// Get Rect with angle (can be overridden in subclasses)
+        /// </summary>
         public virtual Rect Rect(int angle)
         {
             return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Height - 15);
         }
 
-        // Default Rect
+        /// <summary>
+        /// Get Rect without angle
+        /// </summary>
         public virtual Rect Rect()
         {
             return new Rect(_x, _y, _objectImage.Width - 15, _objectImage.Height - 15);
         }
 
-        // Thread-safe render
+        /// <summary>
+        /// Thread-safe render: moves object to _x/_y on UI thread
+        /// </summary>
         public virtual async Task RenderAsync()
         {
+            if (_objectImage == null) return;
+
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher
                 .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
@@ -72,13 +86,17 @@ namespace Dogfight_Arena.Objects
                 });
         }
 
-        // Fire-and-forget render
+        /// <summary>
+        /// Fire-and-forget render
+        /// </summary>
         public virtual void Render()
         {
             _ = RenderAsync();
         }
 
-        // Thread-safe remove
+        /// <summary>
+        /// Thread-safe remove from canvas
+        /// </summary>
         public virtual void Remove()
         {
             _ = RemoveAsync();
@@ -86,6 +104,8 @@ namespace Dogfight_Arena.Objects
 
         private async Task RemoveAsync()
         {
+            if (_objectImage == null) return;
+
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher
                 .RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
@@ -93,7 +113,9 @@ namespace Dogfight_Arena.Objects
                 });
         }
 
-        // Override for collision behavior
+        /// <summary>
+        /// Override for collision behavior
+        /// </summary>
         public virtual void Collide(GameObject otherObject) { }
     }
 }
