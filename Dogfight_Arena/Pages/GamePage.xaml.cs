@@ -43,11 +43,13 @@ namespace Dogfight_Arena.Pages
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            GameManager.GameEvents.TakeHit -= TakeHit;
+            GameManager.GameEvents.AddHealthPoint -= AddHealthPoint;
+
             _GameManager = new GameManager(GameCanvas);
+
             
-            
-            
+
             GameManager.GameEvents.TakeHit += TakeHit;
             GameManager.GameEvents.AddHealthPoint += AddHealthPoint;
             if (GameManager.IsOnline)

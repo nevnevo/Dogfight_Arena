@@ -308,6 +308,7 @@ namespace Dogfight_Arena.Services
         }
         private void Initialize(Canvas field)
         {
+            _ObjectsList.Clear();
             UIthread = Thread.CurrentThread.ManagedThreadId;
             _field = field;
 
