@@ -1,0 +1,90 @@
+﻿<Page
+    x:Class="Dogfight_Arena.Pages.settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Dogfight_Arena.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="White"
+    Loaded="Page_Loaded">
+
+    <Viewbox Stretch="Uniform">
+
+        <Grid Width="1920" Height="1080">
+
+            <TextBlock Text="Settings" FontSize="72" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="4" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="6" Background="Gray" Foreground="Black" Click="Button_Click">Back</Button>
+
+            <TextBlock x:Name="LocalIpText" Text="" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center" Grid.Column="5" Grid.ColumnSpan="3" Grid.RowSpan="10" Foreground="Black" Grid.Row="2"/>
+            
+            <!-- LEFT SIDE -->
+            <TextBlock  Text="Left Side Controls:" FontSize="45" FontWeight="Bold" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="Spin counter clockwise:" FontSize="40" FontWeight="Bold" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="1" Grid.Column="4" Background="BlueViolet" Foreground="Black" Click="ChangeSpinCCW_Click">Change</Button>
+            <TextBlock x:Name="SpinCCWText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="Spin clockwise:" FontSize="40" FontWeight="Bold" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="3" Grid.Column="4" Background="BlueViolet" Foreground="Black" Click="ChangeSpinCW_Click">Change</Button>
+            <TextBlock x:Name="SpinCWText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="Accelerate" FontSize="40" FontWeight="Bold" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="5" Grid.Column="4" Background="BlueViolet" Foreground="Black" Click="ChangeAccelerate_Click">Change</Button>
+            <TextBlock x:Name="AccelerateText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="decelarate" FontSize="40" FontWeight="Bold" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="7" Grid.Column="4" Background="BlueViolet" Foreground="Black" Click="ChangeDecelerate_Click">Change</Button>
+            <TextBlock x:Name="DecelerateText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <!-- RIGHT SIDE -->
+            <TextBlock Text="Right Side Controls:" FontSize="45" FontWeight="Bold" Grid.Row="0" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="Spin counter clockwise:" FontSize="40" FontWeight="Bold" Grid.Row="1" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="1" Grid.Column="11" Background="BlueViolet" Foreground="Black" Click="ChangeP2SpinCCW_Click">Change</Button>
+            <TextBlock x:Name="P2SpinCCWText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="2" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="Spin clockwise:" FontSize="40" FontWeight="Bold" Grid.Row="3" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="3" Grid.Column="11" Background="BlueViolet" Foreground="Black" Click="ChangeP2SpinCW_Click">Change</Button>
+            <TextBlock x:Name="P2SpinCWText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="4" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="Accelerate" FontSize="40" FontWeight="Bold" Grid.Row="5" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="5" Grid.Column="11" Background="BlueViolet" Foreground="Black" Click="ChangeP2Accelerate_Click">Change</Button>
+            <TextBlock x:Name="P2AccelerateText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="6" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <TextBlock Text="decelarate" FontSize="40" FontWeight="Bold" Grid.Row="7" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+            <Button FontSize="40" FontWeight="Bold" Grid.Row="7" Grid.Column="11" Background="BlueViolet" Foreground="Black" Click="ChangeP2Decelerate_Click">Change</Button>
+            <TextBlock x:Name="P2DecelerateText" Text="current: " FontSize="40" FontWeight="Bold" Grid.Row="8" Grid.Column="8" Grid.ColumnSpan="4" Foreground="Black"/>
+
+            <!-- GRID STRUCTURE -->
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+        </Grid>
+
+    </Viewbox>
+</Page>

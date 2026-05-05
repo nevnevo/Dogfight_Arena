@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Dogfight_Arena.App" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAQAAIAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Dogfight_Arena.Projectile" Collapsed="true">
+    <Position X="7.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgBAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Projectile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.MainPage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Pages\MainPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Dogfight_Arena.MenuPage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAQAAAAAAAAACDAAAAAAAAAABAAAAABAAAAgA=</HashCode>
+      <FileName>Pages\MenuPage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Dogfight_Arena.Communication.Client" Collapsed="true">
+    <Position X="19.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAACAAAIAAgMAAC4AAAABAKAkAIAEEBAAAAAAAAAA=</HashCode>
+      <FileName>Communication\Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Communication.Packet" Collapsed="true">
+    <Position X="19.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQACAAAAAAAAABAAAQAAAAAAAAA=</HashCode>
+      <FileName>Communication\Packet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.Bullet" Collapsed="true">
+    <Position X="6" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAEABAAAAAAAAA=</HashCode>
+      <FileName>Objects\Bullet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.GameMovingObject" Collapsed="true">
+    <Position X="9.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACCAAAAAAAAAAAgAAAAAAAAAAAAMJBABAQAAAAA=</HashCode>
+      <FileName>Objects\GameMovingObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.GameObject" Collapsed="true">
+    <Position X="10.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAwAAAAAAAAABAUEACAAAEAAABAAAAIAAAA=</HashCode>
+      <FileName>Objects\GameObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.HealthCrate" Collapsed="true">
+    <Position X="15" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAACAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Objects\HealthCrate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.LeftPlane" Collapsed="true">
+    <Position X="10.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\LeftPlane.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.Missile" Collapsed="true">
+    <Position X="8.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAEAAAAAAECAAAAAEABAAAAAAAAA=</HashCode>
+      <FileName>Objects\Missile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.Plane" Collapsed="true">
+    <Position X="11.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAEAAAEQICABAQAAhKIAAYCGiAAAIQAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\Plane.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Objects.RightPlane" Collapsed="true">
+    <Position X="12.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAABAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\RightPlane.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Pages.GamePage" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="19.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAoAAAAAAEAAAAAAAEBAQAAAAQAEAAAAAAAAgA=</HashCode>
+      <FileName>Pages\GamePage.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Dogfight_Arena.Pages.RefreshGame" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Pages\RefreshGame.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Dogfight_Arena.Pages.settings" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AkABIAAAACgBAsAAAAAAAAEBAQAAAiAAAAAAgQAAAQA=</HashCode>
+      <FileName>Pages\settings.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Dogfight_Arena.Services.Constants" Collapsed="true">
+    <Position X="21" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAACEAAAAAgAACEAAAAAAAAABBQA=</HashCode>
+      <FileName>Services\Constants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Services.Events" Collapsed="true">
+    <Position X="22.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAIRAAAACAAIAAAAAAAAAAAAAAAkAAAAAAAAAA=</HashCode>
+      <FileName>Services\Events.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Services.GameManager" Collapsed="true">
+    <Position X="17.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAIEAApQBAARyBABAYQAAAEQACgAADhgAAABQAEAQg=</HashCode>
+      <FileName>Services\GameManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Services.Keys" Collapsed="true">
+    <Position X="21" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAABAABYAAAAAAAgAAAAIAAAEAAQAAAABAAAAgQA=</HashCode>
+      <FileName>Services\Keys.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Dogfight_Arena.Services.RectangleHelper" Collapsed="true">
+    <Position X="21" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAEAAAAAAAAAQAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Services\RectangleHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -41,7 +41,7 @@ namespace Dogfight_Arena
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            Frame.Navigate(typeof(Pages.settings));
         }
 
         private void AboutButton_Click(object sender, RoutedEventArgs e)
