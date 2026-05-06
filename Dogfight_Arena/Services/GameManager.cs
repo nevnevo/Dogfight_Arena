@@ -354,23 +354,25 @@ namespace Dogfight_Arena.Services
                 _ObjectsList.Add(LocalPlayer);
                 _ObjectsList.Add(SecondPlayer);
 
-                
+
                 if (client._Side == Plane.PlaneTypes.LeftPlane)
                 {
+                    long sentAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                     Packet pkt = new Packet(Packet.PacketType.Ready);
-                    pkt.Data.Add("startingTime", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000);
+                    pkt.Timestamp = sentAt;
+                    pkt.Data.Add("startingTime", sentAt + 5000);
                     client.SendData(pkt);
-                    client.StartTime = (long)pkt.Data["startingTime"];
+                    client.StartTime = sentAt + 5000;
+
                     if (client.StartTime != 0)
                     {
                         long curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                        while (curTime != client.StartTime)
+                        while (curTime < client.StartTime)
                         {
                             curTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                         }
                         _runTimer.Start();
                         _spawnHealthCratesTimer.Start();
-
                     }
                 }
                 else

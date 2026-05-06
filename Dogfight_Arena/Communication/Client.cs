@@ -220,11 +220,12 @@ namespace Dogfight_Arena.Communication
 
                     break;
 
-                case (Packet.PacketType.Ready):
-
-                    StartTime = (long)recievedPacket.Data["startingTime"];
+                // Client.cs — Ready receive case:
+                case Packet.PacketType.Ready:
+                    long remoteStart = (long)recievedPacket.Data["startingTime"];
+                    long remainingDelay = remoteStart - recievedPacket.Timestamp;
+                    StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + Math.Max(0, remainingDelay);
                     break;
-
                 case (Packet.PacketType.Update):
 
                     GameManager.GameEvents.PacketRecieved?.Invoke(recievedPacket);
@@ -234,17 +235,24 @@ namespace Dogfight_Arena.Communication
                     playAgainRequestedFromOther = true;
                     if (playAgainRequested)
                     {
-                        long startingTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000;
+                        long sentAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                        long startingTime = sentAt + 5000;
+
                         var pkt = new Packet(Packet.PacketType.Time);
+                        pkt.Timestamp = sentAt;
                         pkt.Data.Add("startingTime", startingTime);
                         SendData(pkt);
+
                         StartTime = startingTime;
-                        PlayAgainStartTimeSource.TrySetResult(startingTime);
+                        PlayAgainStartTimeSource.TrySetResult(StartTime);
                     }
                     break;
 
-                case (Packet.PacketType.Time):
-                    StartTime = (long)recievedPacket.Data["startingTime"];
+                case Packet.PacketType.Time:
+                    long remoteStart1 = (long)recievedPacket.Data["startingTime"];
+                    long remoteSentAt = recievedPacket.Timestamp;
+                    long remainingDelay1 = remoteStart1 - remoteSentAt; // e.g. ~5000ms
+                    StartTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + Math.Max(0, remainingDelay1);
                     PlayAgainStartTimeSource.TrySetResult(StartTime);
                     break;
 
