@@ -116,20 +116,17 @@ namespace Dogfight_Arena.Pages
                 return;
             }
 
-            // Reset flags before sending so a fast response isn't missed
             GameManager.client.ResetPlayAgainState();
 
             var pkt = new Packet(Packet.PacketType.PlayAgain);
             GameManager.client.SendData(pkt);
             Client.playAgainRequested = true;
 
-            // Wait up to 15 seconds for both players to agree on a start time
             var startTimeTask = GameManager.client.PlayAgainStartTimeSource.Task;
             var completed = await Task.WhenAny(startTimeTask, Task.Delay(15000));
 
             if (completed != startTimeTask)
             {
-                // Other player didn't respond — go back to menu
                 Frame.Navigate(typeof(MenuPage));
                 return;
             }
@@ -139,14 +136,18 @@ namespace Dogfight_Arena.Pages
             if (delay > 0)
                 await Task.Delay((int)delay);
 
-            // Reset health UI
             LeftPlayerHealth = 5;
             RightPlayerHealth = 5;
             healthBarLeftPlayer.Text = "5❤️";
             healthBarRightPlayer.Text = "❤️5";
 
+            // ↓ The new lines go here, replacing the old two-liner
+            GameManager.GameEvents.TakeHit -= TakeHit;
+            GameManager.GameEvents.AddHealthPoint -= AddHealthPoint;
             _GameManager.UnsubscribeAllEvents();
             _GameManager.OnlineReset(GameCanvas, GameManager.client);
+            GameManager.GameEvents.TakeHit += TakeHit;
+            GameManager.GameEvents.AddHealthPoint += AddHealthPoint;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
