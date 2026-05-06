@@ -19,6 +19,7 @@ using static Dogfight_Arena.Objects.Plane;
 using Windows.UI.ViewManagement;
 using Windows.Foundation;
 using Dogfight_Arena.Communication;
+using System.Threading.Tasks;
 
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -66,7 +67,7 @@ namespace Dogfight_Arena.Pages
             
 
 
-
+            
 
 
         }
@@ -106,39 +107,46 @@ namespace Dogfight_Arena.Pages
             }
         }
 
-        private void ResetGame()
+        private async void ResetGame()
         {
-
             if (!GameManager.IsOnline)
-            { 
+            {
                 _GameManager.UnsubscribeAllEvents();
                 Frame.Navigate(typeof(RefreshGame));
+                return;
             }
-            else
+
+            // Reset flags before sending so a fast response isn't missed
+            GameManager.client.ResetPlayAgainState();
+
+            var pkt = new Packet(Packet.PacketType.PlayAgain);
+            GameManager.client.SendData(pkt);
+            Client.playAgainRequested = true;
+
+            // Wait up to 15 seconds for both players to agree on a start time
+            var startTimeTask = GameManager.client.PlayAgainStartTimeSource.Task;
+            var completed = await Task.WhenAny(startTimeTask, Task.Delay(15000));
+
+            if (completed != startTimeTask)
             {
-                var pkt = new Packet(Packet.PacketType.PlayAgain);
-                GameManager.client.SendData(pkt);
-                Client.playAgainRequested = true;
-                long currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                long endTime = currentTime + 15; 
-                while (currentTime < endTime && !Client.playAgainRequestedFromOther)
-                {
-                    currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                }
-                if (Client.playAgainRequestedFromOther)
-                {
-                    long startingTime = GameManager.client.StartTime;
-                    currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                    while (currentTime < startingTime)
-                    {
-                        currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                    }
-                    _GameManager.UnsubscribeAllEvents();
-                    _GameManager.OnlineReset(GameCanvas,GameManager.client);
-                }
+                // Other player didn't respond — go back to menu
+                Frame.Navigate(typeof(MenuPage));
+                return;
             }
 
+            long startingTime = startTimeTask.Result;
+            long delay = startingTime - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if (delay > 0)
+                await Task.Delay((int)delay);
 
+            // Reset health UI
+            LeftPlayerHealth = 5;
+            RightPlayerHealth = 5;
+            healthBarLeftPlayer.Text = "5❤️";
+            healthBarRightPlayer.Text = "❤️5";
+
+            _GameManager.UnsubscribeAllEvents();
+            _GameManager.OnlineReset(GameCanvas, GameManager.client);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

@@ -354,7 +354,7 @@ namespace Dogfight_Arena.Services
                 _ObjectsList.Add(LocalPlayer);
                 _ObjectsList.Add(SecondPlayer);
 
-                _spawnHealthCratesTimer.Tick += _spawnCratesTimer_Tick;
+                
                 if (client._Side == Plane.PlaneTypes.LeftPlane)
                 {
                     Packet pkt = new Packet(Packet.PacketType.Ready);
@@ -419,35 +419,69 @@ namespace Dogfight_Arena.Services
 
         }
 
-        internal void OnlineReset(Canvas gameCanvas,Client _client)
+        internal void OnlineReset(Canvas gameCanvas, Client _client)
         {
-            UnsubscribeAllEvents();
+            // Caller (GamePage) already called UnsubscribeAllEvents — don't call it again
 
             lock (_objectListLock)
             {
                 foreach (var obj in _ObjectsList)
-                    obj.Remove(); // remove from canvas
-
+                    obj.Remove();
                 _ObjectsList.Clear();
             }
 
             ActiveKeys.Clear();
-
-            // --- RESET FIELDS ---
             _isLastHealthCrateOn = false;
             _isLastMissileCrateOn = false;
             seed = 0;
 
             LocalPlayer = null;
             SecondPlayer = null;
-            
             GameEvents = new Events();
-
             _runTimer = null;
             _spawnHealthCratesTimer = null;
-            client = _client;
-            Initialize(gameCanvas);
 
+            client = _client;
+
+            OnlineInitialize(gameCanvas);
+        }
+
+        // Reinitializes game objects using the EXISTING client connection — no handshake.
+        private void OnlineInitialize(Canvas field)
+        {
+            _field = field;
+
+            _runTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1) };
+            _runTimer.Tick += runTimer_Tick;
+
+            _spawnHealthCratesTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(10000) };
+            _spawnHealthCratesTimer.Tick += _spawnCratesTimer_Tick;
+
+            if (client._Side == Plane.PlaneTypes.LeftPlane)
+            {
+                LocalPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
+                SecondPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
+            }
+            else
+            {
+                SecondPlayer = new LeftPlane(100, 150, "Images/LeftPlayer.png", field, PlayerWidth);
+                LocalPlayer = new RightPlane(field.ActualWidth - 100 - 200, 150, "Images/RightPlayer.png", field, PlayerWidth);
+            }
+
+            _ObjectsList.Add(LocalPlayer);
+            _ObjectsList.Add(SecondPlayer);
+
+            Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
+            Window.Current.CoreWindow.KeyUp += CoreWindow_KeyUp;
+
+            GameEvents.OnShoot += OnShoot;
+            GameEvents.OnDelete += DeleteObject;
+            GameEvents.CreateMissile += CreateMissile;
+            GameEvents.PacketRecieved += PacketRecieved;
+
+            // Start time was already awaited by GamePage before calling OnlineReset
+            _runTimer.Start();
+            _spawnHealthCratesTimer.Start();
         }
     }
 }

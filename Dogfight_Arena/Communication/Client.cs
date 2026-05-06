@@ -76,7 +76,17 @@ namespace Dogfight_Arena.Communication
                 UpdateTimer.Start();
             }
         }
+        // Add this public field
+        public TaskCompletionSource<long> PlayAgainStartTimeSource = new TaskCompletionSource<long>();
 
+        // Add this method
+        public void ResetPlayAgainState()
+        {
+            playAgainRequested = false;
+            playAgainRequestedFromOther = false;
+            PlayAgainStartTimeSource = new TaskCompletionSource<long>();
+            StartTime = 0;
+        }
         private void SendUpdatePkt(object sender, object e)
         {
             if (!_isRunning)
@@ -221,23 +231,21 @@ namespace Dogfight_Arena.Communication
                     break;
 
                 case (Packet.PacketType.PlayAgain):
-
+                    playAgainRequestedFromOther = true;
                     if (playAgainRequested)
                     {
+                        long startingTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000;
                         var pkt = new Packet(Packet.PacketType.Time);
-
-                        pkt.Data["startingTime"] =
-                            (long)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + 5000;
-
+                        pkt.Data.Add("startingTime", startingTime);
                         SendData(pkt);
+                        StartTime = startingTime;
+                        PlayAgainStartTimeSource.TrySetResult(startingTime);
                     }
-
-                    playAgainRequestedFromOther = true;
                     break;
 
                 case (Packet.PacketType.Time):
-
                     StartTime = (long)recievedPacket.Data["startingTime"];
+                    PlayAgainStartTimeSource.TrySetResult(StartTime);
                     break;
 
                 case (Packet.PacketType.OnShoot):
@@ -299,6 +307,8 @@ namespace Dogfight_Arena.Communication
 
 
                     break;
+
+
             }
         }
 
