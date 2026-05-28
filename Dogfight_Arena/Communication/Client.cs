@@ -148,7 +148,7 @@ namespace Dogfight_Arena.Communication
                             TypeNameHandling = TypeNameHandling.All 
                         };
                         Packet recievedPacket =
-                            JsonConvert.DeserializeObject<Packet>(recievedData);
+                            JsonConvert.DeserializeObject<Packet>(recievedData,settings);
 
                         ProccessPacket(recievedPacket);
                     });
