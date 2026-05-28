@@ -41,6 +41,9 @@ namespace Dogfight_Arena.Communication
         public static bool playAgainRequested = false;
         public static bool playAgainRequestedFromOther = false;
 
+
+
+
         public Client(int localPort)
         {
             _localPort = localPort;
@@ -140,6 +143,10 @@ namespace Dogfight_Arena.Communication
 
                     Task.Run(() =>
                     {
+                        var settings = new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.All 
+                        };
                         Packet recievedPacket =
                             JsonConvert.DeserializeObject<Packet>(recievedData);
 
